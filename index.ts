@@ -60,18 +60,18 @@ export const action = <
   action: Action<A, AsyncUpdateOr<Store, T, T>>
 ): Action<A, T> => {
   const bindAction = action.bind(null);
-  const internalStore = getStoreManager(store)
+  const storeManager = getStoreManager(store)
 
   const overrided = (...args: A) => {
     const returnValue = bindAction(...args)
 
     if (returnValue instanceof Promise) {
       returnValue.then(value => {
-        internalStore.partialUpdate(value)
+        storeManager.partialUpdate(value)
         return value;
       })
     } else {
-      internalStore.partialUpdate(returnValue)
+      storeManager.partialUpdate(returnValue)
     }
 
     return returnValue;
