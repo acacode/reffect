@@ -7,6 +7,7 @@
     "target": "esnext",
     "baseUrl": ".",
     "moduleResolution": "node",
+    "strict": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -15,12 +16,8 @@
     "rootDir": ".",
     "sourceMap": true,
     "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
+    "suppressImplicitAnyIndexErrors": true
   },
-  "include": [ "index.ts" ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["index.ts"],
+  "exclude": ["dist", "node_modules", "**/*.spec.ts"]
 }
