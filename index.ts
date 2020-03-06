@@ -12,12 +12,11 @@ type Middleware<Store> = (
   initialState: Store
 ) => void;
 type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
-  ? T extends Partial<Store>
+  ? keyof T extends never
+    ? Partial<Store>
+    : T extends Partial<Store>
     ? Partial<Store>
     : T
-  : never;
-type ActionReturn<Store, T> = Exclude<keyof T, keyof Store> extends never
-  ? T
   : never;
 
 const createUid = () => Symbol("store_id");
@@ -59,7 +58,20 @@ export const createStore = <Store>(
 };
 
 /**
- * Standard action
+ * **Property action**
+ * @example
+ * const updateApples = action(store, "apples")
+ * updateApples([1,2,3,4])
+ */
+export function action<Store extends object, P extends keyof Store>(
+  store: Store,
+  property: P
+): Action<[Store[P]], void>;
+/**
+ * **Standard action**
+ * @example
+ * const updateApples = action(store, apples => ({ apples })
+ * updateApples([1,2,3,4])
  */
 export function action<
   Store extends object,
@@ -68,9 +80,18 @@ export function action<
 >(
   store: Store,
   action: Action<Input, StoreUpdate<Store, Update>>
-): Action<Input, ActionReturn<Store, Update>>;
+): Action<Input, void>;
 /**
- * Async action
+ * **Async action**
+ * @example
+ * const updateApples = action(store, async apples => {
+ *  const responseApples = await api.updateApples(apples)
+ *
+ *  return {
+ *    apples: responseApples
+ *  }
+ * })
+ * updateApples([1,2,3,4])
  */
 export function action<
   Store extends object,
@@ -79,16 +100,15 @@ export function action<
 >(
   store: Store,
   asyncAction: Action<Input, Promise<StoreUpdate<Store, Update>>>
-): Action<Input, Promise<ActionReturn<Store, Update>>>;
+): Action<Input, Promise<void>>;
 /**
- * Property action
- */
-export function action<Store extends object, P extends keyof Store>(
-  store: Store,
-  property: P
-): Action<[Store[P]], Pick<Store, P>>;
-/**
- * Simple action
+ * **Simple action**
+ * @example
+ * const updateApples = action(store)
+ * updateApples({
+ *  apples: [1,2,3,4],
+ *  someOtherStoreKey: 22,
+ * })
  */
 export function action<Store extends object, D = Partial<Store>>(
   store: Store
@@ -99,9 +119,7 @@ export function action<Store extends object>(
 ): any {
   const { partialUpdate } = getStoreManager(store);
 
-  return <InnerArgs extends unknown[] | [], InnerReturnType>(
-    ...args: InnerArgs
-  ): InnerReturnType => {
+  return <A extends unknown[] | [], R>(...args: A): void => {
     let patch: any = void 0;
 
     if (args.length === 1 && !param && typeof args[0] === "object") {
@@ -120,7 +138,5 @@ export function action<Store extends object>(
     } else {
       partialUpdate(patch as Partial<Store>);
     }
-
-    return patch;
   };
 }
