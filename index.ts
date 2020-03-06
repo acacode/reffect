@@ -38,8 +38,10 @@ export const createStore = <Store>(
     initialState: { ...initialState },
     storeId: createUid(),
     partialUpdate: (storeUpdate: Partial<Store>) => {
-      Object.assign(store, storeUpdate);
-      watchers.forEach(watcher => watcher(storeUpdate));
+      if (storeUpdate) {
+        Object.assign(store, storeUpdate);
+        watchers.forEach(watcher => watcher(storeUpdate));
+      }
     },
     watch: watcher => watchers.push(watcher),
     unwatch: watcher => {
@@ -102,7 +104,7 @@ export function action<
   Update extends Partial<Store> = Partial<Store>
 >(
   store: Store,
-  action: Action<Input, StoreUpdate<Store, Update>>
+  action: Action<Input, StoreUpdate<Store, Update> | void>
 ): Action<Input, void>;
 
 /**
@@ -125,7 +127,7 @@ export function action<
   Update extends Partial<Store> = Partial<Store>
 >(
   store: Store,
-  asyncAction: Action<Input, Promise<StoreUpdate<Store, Update>>>
+  asyncAction: Action<Input, Promise<StoreUpdate<Store, Update> | void>>
 ): Action<Input, Promise<void>>;
 
 export function action<Store extends object>(
