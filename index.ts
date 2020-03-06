@@ -19,6 +19,8 @@ type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
     : T
   : never;
 
+type UnknownArgs = unknown[] | [];
+
 const createUid = () => Symbol("store_id");
 
 const storeManagerKey = createUid();
@@ -58,31 +60,55 @@ export const createStore = <Store>(
 };
 
 /**
+ * **Simple action**
+ * Action which allows to update store without any other manipulations
+ *
+ * @example
+ * const updateApples = action(store)
+ * updateApples({
+ *  apples: [1,2,3,4],
+ *  someOtherStoreKey: 22,
+ * })
+ */
+export function action<
+  Store extends object,
+  D extends Partial<Store> = Partial<Store>
+>(store: Store): Action<[D], D>;
+
+/**
  * **Property action**
+ * Action which update store property
+ *
  * @example
  * const updateApples = action(store, "apples")
  * updateApples([1,2,3,4])
  */
-export function action<Store extends object, P extends keyof Store>(
-  store: Store,
-  property: P
-): Action<[Store[P]], void>;
+export function action<
+  Store extends object,
+  P extends keyof Store = keyof Store
+>(store: Store, property: P): Action<[Store[P]], void>;
+
 /**
  * **Standard action**
+ * Synchronous store update
+ *
  * @example
  * const updateApples = action(store, apples => ({ apples })
  * updateApples([1,2,3,4])
  */
 export function action<
   Store extends object,
-  Input extends unknown[] | [],
-  Update extends Partial<Store>
+  Input extends UnknownArgs = UnknownArgs,
+  Update extends Partial<Store> = Partial<Store>
 >(
   store: Store,
   action: Action<Input, StoreUpdate<Store, Update>>
 ): Action<Input, void>;
+
 /**
  * **Async action**
+ * Asynchronous store update
+ *
  * @example
  * const updateApples = action(store, async apples => {
  *  const responseApples = await api.updateApples(apples)
@@ -95,48 +121,36 @@ export function action<
  */
 export function action<
   Store extends object,
-  Input extends unknown[] | [],
-  Update extends Partial<Store>
+  Input extends UnknownArgs = UnknownArgs,
+  Update extends Partial<Store> = Partial<Store>
 >(
   store: Store,
   asyncAction: Action<Input, Promise<StoreUpdate<Store, Update>>>
 ): Action<Input, Promise<void>>;
-/**
- * **Simple action**
- * @example
- * const updateApples = action(store)
- * updateApples({
- *  apples: [1,2,3,4],
- *  someOtherStoreKey: 22,
- * })
- */
-export function action<Store extends object, D = Partial<Store>>(
-  store: Store
-): Action<[D], D>;
+
 export function action<Store extends object>(
   store: Store,
   param: any = null
 ): any {
   const { partialUpdate } = getStoreManager(store);
 
-  return <A extends unknown[] | [], R>(...args: A): void => {
-    let patch: any = void 0;
+  return <A extends UnknownArgs>(...args: A): any => {
+    let update: any = void 0;
 
     if (args.length === 1 && !param && typeof args[0] === "object") {
-      patch = args[0];
+      update = args[0];
     } else if (args.length === 1 && store.hasOwnProperty(param)) {
-      patch = { [param]: args[0] };
+      update = { [param]: args[0] };
     } else {
-      patch = param(...args);
+      update = param(...args);
     }
 
-    if (patch instanceof Promise) {
-      patch.then(value => {
+    if (update instanceof Promise) {
+      return update.then(value => {
         partialUpdate(value);
-        return value;
       });
     } else {
-      partialUpdate(patch as Partial<Store>);
+      partialUpdate(update as Partial<Store>);
     }
   };
 }
