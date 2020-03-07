@@ -25,8 +25,11 @@ const createUid = () => Symbol("store_id");
 
 const storeManagerKey = createUid();
 
-export const getStoreManager = <Store>(store: Store): StoreManager<Store> =>
-  store[storeManagerKey];
+export const getStoreManager = <Store>(store: Store): StoreManager<Store> => {
+  if (!store[storeManagerKey]) throw new Error("Received wrong store");
+
+  return store[storeManagerKey];
+};
 
 export const createStore = <Store>(
   initialState: Partial<Store>,
