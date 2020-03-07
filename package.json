@@ -1,6 +1,6 @@
 {
   "name": "rym",
-  "version": "0.0.10-alpha",
+  "version": "0.0.11-alpha",
   "description": "The state manager",
   "scripts": {
     "build": "rollup -c",
