@@ -12,7 +12,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
-    "outDir": "dist",
+    "outDir": "dir",
     "rootDir": ".",
     "sourceMap": true,
     "strictNullChecks": true,

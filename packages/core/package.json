@@ -1,17 +1,21 @@
 {
-  "name": "reffect",
+  "name": "@reffect/core",
+  "version": "0.0.12-alpha",
   "description": "The state manager",
   "scripts": {
-    "postinstall": "npm run bootstrap",
-    "bootstrap": "lerna bootstrap && lerna run rebuild",
-    "build": "lerna run build",
-    "size": "lerna run size",
-    "publish": "lerna publish from-package"
+    "build": "rollup -c",
+    "size": "size-limit"
   },
   "author": "acacode",
   "license": "MIT",
-  "readme": "README.md",
+  "private": false,
   "sideEffects": false,
+  "source": "index.ts",
+  "main": "reffect.cjs.js",
+  "typings": "index.ts",
+  "umd:main": "reffect.umd.js",
+  "jsnext:main": "reffect.es.js",
+  "module": "reffect.es.js",
   "devDependencies": {
     "@babel/core": "^7.8.6",
     "@babel/preset-env": "^7.8.6",
@@ -21,10 +25,6 @@
     "@rollup/plugin-replace": "^2.3.1",
     "@rollup/plugin-typescript": "^2.1.0",
     "@size-limit/preset-small-lib": "^4.1.1",
-    "husky": "^4.2.3",
-    "lerna": "^3.20.2",
-    "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.1",
     "rollup": "^1.32.0",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.26.0",
@@ -32,10 +32,11 @@
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged",
-      "post-commit": "git update-index -g"
-    }
-  }
+  "files": [
+    "LICENSE",
+    "index.ts",
+    "reffect.*.js",
+    "reffect.*.js.map"
+  ],
+  "dependencies": {}
 }

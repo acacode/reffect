@@ -1,3 +1,3 @@
-# rym
+# @reffect/core
 
 ### The state manager

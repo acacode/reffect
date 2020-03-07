@@ -1,16 +1,16 @@
 [
   {
-    "path": "rym.es.js",
+    "path": "reffect.es.js",
     "webpack": false,
     "limit": "500 B"
   },
   {
-    "path": "rym.cjs.js",
+    "path": "reffect.cjs.js",
     "webpack": false,
     "limit": "500 B"
   },
   {
-    "path": "rym.umd.js",
+    "path": "reffect.umd.js",
     "webpack": false,
     "limit": "600 B"
   }

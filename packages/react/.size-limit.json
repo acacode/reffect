@@ -1,0 +1,17 @@
+[
+  {
+    "path": "reffect-react.es.js",
+    "webpack": false,
+    "limit": "300 B"
+  },
+  {
+    "path": "reffect-react.cjs.js",
+    "webpack": false,
+    "limit": "300 B"
+  },
+  {
+    "path": "reffect-react.umd.js",
+    "webpack": false,
+    "limit": "400 B"
+  }
+]
