@@ -1,7 +1,7 @@
 type Action<A extends unknown[], R> = (...a: A) => R;
 type Watcher<Store> = (partialUpdate: Partial<Store>) => void;
 type StoreManager<Store> = {
-  initialState: Store;
+  initialState: Partial<Store>;
   partialUpdate: (store: Partial<Store>) => void;
   storeId: Symbol;
   watch: (watcher: Watcher<Store>) => void;
@@ -9,7 +9,7 @@ type StoreManager<Store> = {
 };
 type Middleware<Store> = (
   storeManager: StoreManager<Store>,
-  initialState: Store
+  initialState: Partial<Store>
 ) => void;
 type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
   ? keyof T extends never
@@ -29,7 +29,7 @@ export const getStoreManager = <Store>(store: Store): StoreManager<Store> =>
   store[storeManagerKey];
 
 export const createStore = <Store>(
-  initialState: Store,
+  initialState: Partial<Store>,
   middlewares?: Middleware<Store>[]
 ): Store => {
   const watchers: Watcher<Store>[] = [];
