@@ -1,0 +1,17 @@
+[
+  {
+    "path": "rym.es.js",
+    "webpack": false,
+    "limit": "500 B"
+  },
+  {
+    "path": "rym.cjs.js",
+    "webpack": false,
+    "limit": "500 B"
+  },
+  {
+    "path": "rym.umd.js",
+    "webpack": false,
+    "limit": "600 B"
+  }
+]
