@@ -1,6 +1,6 @@
 {
   "name": "@reffect/react",
-  "version": "0.0.4-alpha",
+  "version": "0.0.5-alpha",
   "description": "React bindings for Reffect",
   "scripts": {
     "build": "rollup -c",
@@ -18,14 +18,14 @@
   "jsnext:main": "reffect-react.es.js",
   "module": "reffect-react.es.js",
   "peerDependencies": {
-    "@reffect/core": "^0.0.12-alpha",
+    "@reffect/core": "^0.0.13-alpha",
     "react": "^16.13.0"
   },
   "devDependencies": {
-    "@reffect/core": "^0.0.12-alpha",
     "@babel/core": "^7.8.6",
     "@babel/preset-env": "^7.8.6",
     "@babel/preset-typescript": "^7.8.3",
+    "@reffect/core": "^0.0.13-alpha",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@rollup/plugin-replace": "^2.3.1",
@@ -46,5 +46,5 @@
     "reffect-react.*.js",
     "reffect-react.*.js.map"
   ],
-  "dependencies": {}
+  "gitHead": "3846663830e92695663d50d0021a5c75f9439319"
 }
