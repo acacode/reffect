@@ -7,6 +7,7 @@
     "build": "lerna run build",
     "size": "lerna run size",
     "publish": "lerna publish from-package --yes",
+    "publish:i": "lerna publish from-package",
     "publish:ci": "lerna publish from-package --yes --legacy-auth ${NPM_TOKEN}",
     "deps:check": "find . -type f -name 'package.json' -not -path './.git/*' -not -path '*/node_modules/*' -execdir ncu ;",
     "deps:upgrade": "find . -type f -name 'package.json' -not -path './.git/*' -not -path '*/node_modules/*' -execdir ncu --upgrade ;"

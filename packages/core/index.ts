@@ -1,13 +1,13 @@
 type Action<A extends unknown[], R> = (...a: A) => R;
-type Watcher<Store> = (partialUpdate: Partial<Store>) => void;
-type StoreManager<Store> = {
+export type Watcher<Store> = (partialUpdate: Partial<Store>) => void;
+export type StoreManager<Store> = {
   initialState: Partial<Store>;
   partialUpdate: (store: Partial<Store>) => void;
   storeId: Symbol;
   watch: (watcher: Watcher<Store>) => void;
   unwatch: (watcher: Watcher<Store>) => void;
 };
-type Middleware<Store> = (
+export type Middleware<Store> = (
   storeManager: StoreManager<Store>,
   initialState: Partial<Store>
 ) => void;
