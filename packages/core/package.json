@@ -1,6 +1,6 @@
 {
   "name": "@reffect/core",
-  "version": "0.0.14-alpha",
+  "version": "0.0.15-alpha",
   "description": "The state manager",
   "scripts": {
     "build": "rollup -c",
@@ -17,18 +17,18 @@
   "jsnext:main": "reffect.es.js",
   "module": "reffect.es.js",
   "devDependencies": {
-    "@babel/core": "^7.8.6",
-    "@babel/preset-env": "^7.8.6",
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
     "@babel/preset-typescript": "^7.8.3",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@rollup/plugin-replace": "^2.3.1",
-    "@rollup/plugin-typescript": "^2.1.0",
-    "@size-limit/preset-small-lib": "^4.1.1",
-    "rollup": "^1.32.0",
+    "@rollup/plugin-typescript": "^4.0.0",
+    "@size-limit/preset-small-lib": "^4.2.1",
+    "rollup": "^2.0.2",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.26.0",
-    "size-limit": "^4.1.1",
+    "size-limit": "^4.2.1",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   },
@@ -38,5 +38,21 @@
     "reffect.*.js",
     "reffect.*.js.map"
   ],
-  "dependencies": {}
+  "dependencies": {},
+  "keywords": [
+    "redux",
+    "effector",
+    "mobx",
+    "state",
+    "store",
+    "flux",
+    "reactive",
+    "state-manager",
+    "state manager",
+    "reffect"
+  ],
+  "bugs": {
+    "url": "https://github.com/acacode/reffect/issues"
+  },
+  "homepage": "https://github.com/acacode/reffect"
 }

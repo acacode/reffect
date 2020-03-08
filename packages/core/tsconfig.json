@@ -1,9 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "rootDir": "."
-  },
   "include": ["index.ts"],
   "exclude": ["node_modules"]
 }
