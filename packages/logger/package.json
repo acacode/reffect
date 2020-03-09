@@ -18,13 +18,13 @@
   "jsnext:main": "reffect-logger.es.js",
   "module": "reffect-logger.es.js",
   "peerDependencies": {
-    "@reffect/core": "^0.0.16-alpha"
+    "@reffect/core": "^0.0.17-alpha"
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/preset-env": "^7.8.7",
     "@babel/preset-typescript": "^7.8.3",
-    "@reffect/core": "^0.0.16-alpha",
+    "@reffect/core": "^0.0.17-alpha",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@rollup/plugin-replace": "^2.3.1",
@@ -58,5 +58,5 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "3846663830e92695663d50d0021a5c75f9439319"
+  "gitHead": "165ee15a3fdcbfbb25e817042597b369e7bcedcd"
 }

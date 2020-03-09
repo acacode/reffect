@@ -1,6 +1,6 @@
 {
   "name": "@reffect/core",
-  "version": "0.0.16-alpha",
+  "version": "0.0.17-alpha",
   "description": "The state manager",
   "scripts": {
     "build": "rollup -c",
@@ -38,7 +38,6 @@
     "reffect.*.js",
     "reffect.*.js.map"
   ],
-  "dependencies": {},
   "keywords": [
     "redux",
     "effector",
@@ -54,5 +53,6 @@
   "bugs": {
     "url": "https://github.com/acacode/reffect/issues"
   },
-  "homepage": "https://github.com/acacode/reffect"
+  "homepage": "https://github.com/acacode/reffect",
+  "gitHead": "165ee15a3fdcbfbb25e817042597b369e7bcedcd"
 }
