@@ -6,6 +6,7 @@
     "bootstrap": "lerna bootstrap && lerna run rebuild",
     "build": "lerna run build",
     "size": "lerna run size",
+    "prepublish": "npm run build",
     "publish": "lerna publish from-package --yes",
     "publish:i": "lerna publish from-package",
     "publish:ci": "lerna publish from-package --yes --legacy-auth ${NPM_TOKEN}",
