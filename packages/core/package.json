@@ -1,6 +1,6 @@
 {
   "name": "@reffect/core",
-  "version": "0.0.17-alpha",
+  "version": "0.0.18-alpha",
   "description": "The state manager",
   "scripts": {
     "build": "rollup -c",

@@ -84,57 +84,57 @@ export function createStore<Store extends object>(
 }
 
 /**
- * **Simple action**
+ * **Simple effect**
  * Action which allows to update store without any other manipulations
  *
  * @example
- * const updateApples = action(store)
+ * const updateApples = effect(store)
  * updateApples({
  *  apples: [1,2,3,4],
  *  someOtherStoreKey: 22,
  * })
  */
-export function action<
+export function effect<
   Store extends object,
   D extends Partial<Store> = Partial<Store>
 >(store: Store): Action<[D], D>;
 
 /**
- * **Property action**
+ * **Property effect**
  * Action which update store property
  *
  * @example
- * const updateApples = action(store, "apples")
+ * const updateApples = effect(store, "apples")
  * updateApples([1,2,3,4])
  */
-export function action<
+export function effect<
   Store extends object,
   P extends keyof Store = keyof Store
 >(store: Store, property: P): Action<[Store[P]], void>;
 
 /**
- * **Standard action**
+ * **Standard effect**
  * Synchronous store update
  *
  * @example
- * const updateApples = action(store, apples => ({ apples })
+ * const updateApples = effect(store, apples => ({ apples })
  * updateApples([1,2,3,4])
  */
-export function action<
+export function effect<
   Store extends object,
   Input extends UnknownArgs = UnknownArgs,
   Update extends Partial<Store> = Partial<Store>
 >(
   store: Store,
-  action: Action<Input, StoreUpdate<Store, Update> | void>
+  effect: Action<Input, StoreUpdate<Store, Update> | void>
 ): Action<Input, void>;
 
 /**
- * **Async action**
+ * **Async effect**
  * Asynchronous store update
  *
  * @example
- * const updateApples = action(store, async apples => {
+ * const updateApples = effect(store, async apples => {
  *  const responseApples = await api.updateApples(apples)
  *
  *  return {
@@ -143,7 +143,7 @@ export function action<
  * })
  * updateApples([1,2,3,4])
  */
-export function action<
+export function effect<
   Store extends object,
   Input extends UnknownArgs = UnknownArgs,
   Update extends Partial<Store> = Partial<Store>
@@ -152,7 +152,7 @@ export function action<
   asyncAction: Action<Input, Promise<StoreUpdate<Store, Update> | void>>
 ): Action<Input, Promise<void>>;
 
-export function action<Store extends object>(
+export function effect<Store extends object>(
   store: Store,
   param: any = null
 ): any {
