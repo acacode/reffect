@@ -1,16 +1,17 @@
 type Action<A extends unknown[], R> = (...a: A) => R;
-type Watcher<Store> = (partialUpdate: Partial<Store>) => void;
-type StoreManager<Store> = {
+export type Watcher<Store> = (partialUpdate: Partial<Store>) => void;
+export type StoreManager<Store> = {
+  name: string;
   initialState: Partial<Store>;
   partialUpdate: (store: Partial<Store>) => void;
   storeId: Symbol;
   watch: (watcher: Watcher<Store>) => void;
   unwatch: (watcher: Watcher<Store>) => void;
 };
-type Middleware<Store> = (
+export type Middleware<Store> = (
   storeManager: StoreManager<Store>,
   initialState: Partial<Store>
-) => void;
+) => StoreManager<Store>;
 type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
   ? keyof T extends never
     ? Partial<Store>
@@ -25,20 +26,39 @@ const createUid = () => Symbol("store_id");
 
 const storeManagerKey = createUid();
 
+const defaultStoreName = "unknown-store";
+
 export const getStoreManager = <Store>(store: Store): StoreManager<Store> => {
   if (!store[storeManagerKey]) throw new Error("Received wrong store");
 
   return store[storeManagerKey];
 };
 
-export const createStore = <Store>(
-  initialState: Partial<Store>,
+export function createStore<Store extends object>(
+  storeName?: string,
+  initialState?: Partial<Store>,
   middlewares?: Middleware<Store>[]
-): Store => {
+): Store;
+
+export function createStore<Store extends object>(
+  initialState?: Partial<Store>,
+  storeName?: string,
+  middlewares?: Middleware<Store>[]
+): Store;
+
+export function createStore<Store extends object>(
+  param1?: any,
+  param2: any = defaultStoreName,
+  middlewares?: Middleware<Store>[]
+): Store {
+  const [storeName, initialState] =
+    typeof param1 === "string" ? [param1, param2] : [param2, param1];
+
   const watchers: Watcher<Store>[] = [];
 
   const storeManager: StoreManager<Store> = {
     initialState: { ...initialState },
+    name: storeName,
     storeId: createUid(),
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {
@@ -53,16 +73,15 @@ export const createStore = <Store>(
     }
   };
 
-  (middlewares || []).forEach(middleware =>
-    middleware(storeManager, initialState)
-  );
-
   const store = Object.create({
-    [storeManagerKey]: storeManager
+    [storeManagerKey]: (middlewares || []).reduce(
+      (storeManager, middleware) => middleware(storeManager, param1),
+      storeManager
+    )
   });
 
-  return Object.assign(store, { ...initialState });
-};
+  return Object.assign(store, { ...param1 });
+}
 
 /**
  * **Simple action**

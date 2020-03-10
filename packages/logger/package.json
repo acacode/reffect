@@ -1,30 +1,36 @@
 {
-  "name": "@reffect/core",
-  "version": "0.0.17-alpha",
-  "description": "The state manager",
+  "name": "@reffect/logger",
+  "version": "0.0.1-alpha",
+  "description": "logger middleware for Reffect",
   "scripts": {
     "build": "rollup -c",
     "size": "size-limit"
   },
   "author": "acacode",
   "license": "MIT",
+  "readme": "README.md",
   "private": false,
   "sideEffects": false,
   "source": "index.ts",
-  "main": "reffect.cjs.js",
+  "main": "reffect-logger.cjs.js",
   "typings": "index.ts",
-  "umd:main": "reffect.umd.js",
-  "jsnext:main": "reffect.es.js",
-  "module": "reffect.es.js",
+  "umd:main": "reffect-logger.umd.js",
+  "jsnext:main": "reffect-logger.es.js",
+  "module": "reffect-logger.es.js",
+  "peerDependencies": {
+    "@reffect/core": "^0.0.17-alpha"
+  },
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/preset-env": "^7.8.7",
     "@babel/preset-typescript": "^7.8.3",
+    "@reffect/core": "^0.0.17-alpha",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "@rollup/plugin-replace": "^2.3.1",
     "@rollup/plugin-typescript": "^4.0.0",
     "@size-limit/preset-small-lib": "^4.2.1",
+    "react": "^16.13.0",
     "rollup": "^2.0.2",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.26.0",
@@ -35,8 +41,8 @@
   "files": [
     "LICENSE",
     "index.ts",
-    "reffect.*.js",
-    "reffect.*.js.map"
+    "reffect-logger.*.js",
+    "reffect-logger.*.js.map"
   ],
   "keywords": [
     "redux",
@@ -48,11 +54,9 @@
     "reactive",
     "state-manager",
     "state manager",
+    "react",
+    "hooks",
     "reffect"
   ],
-  "bugs": {
-    "url": "https://github.com/acacode/reffect/issues"
-  },
-  "homepage": "https://github.com/acacode/reffect",
   "gitHead": "fcdb0059a1379d870444a5684bc04c6d60b443e9"
 }
