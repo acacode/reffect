@@ -2,16 +2,16 @@
   {
     "path": "reffect-logger.es.js",
     "webpack": false,
-    "limit": "300 B"
+    "limit": "500 B"
   },
   {
     "path": "reffect-logger.cjs.js",
     "webpack": false,
-    "limit": "300 B"
+    "limit": "500 B"
   },
   {
     "path": "reffect-logger.umd.js",
     "webpack": false,
-    "limit": "400 B"
+    "limit": "700 B"
   }
 ]

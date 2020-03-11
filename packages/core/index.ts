@@ -1,5 +1,9 @@
 type Action<A extends unknown[], R> = (...a: A) => R;
-export type Watcher<Store> = (partialUpdate: Partial<Store>) => void;
+export type Watcher<Store> = (
+  partialUpdate: Partial<Store>,
+  prevState: Store,
+  curState: Store
+) => void;
 export type StoreManager<Store> = {
   name: string;
   initialState: Partial<Store>;
@@ -8,7 +12,7 @@ export type StoreManager<Store> = {
   watch: (watcher: Watcher<Store>) => void;
   unwatch: (watcher: Watcher<Store>) => void;
 };
-export type Middleware<Store> = (
+export type Middleware<Store extends object> = (
   storeManager: StoreManager<Store>,
   initialState: Partial<Store>
 ) => StoreManager<Store>;
@@ -57,13 +61,14 @@ export function createStore<Store extends object>(
   const watchers: Watcher<Store>[] = [];
 
   const storeManager: StoreManager<Store> = {
-    initialState: { ...initialState },
+    initialState: { ...(initialState || {}) },
     name: storeName,
     storeId: createUid(),
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {
-        Object.assign(store, storeUpdate);
-        watchers.forEach(watcher => watcher(storeUpdate));
+        const prevState = Object.assign({}, { ...store });
+        Object.assign(store, { ...storeUpdate });
+        watchers.forEach(watcher => watcher(storeUpdate, prevState, store));
       }
     },
     watch: watcher => watchers.push(watcher),
@@ -80,7 +85,7 @@ export function createStore<Store extends object>(
     )
   });
 
-  return Object.assign(store, { ...param1 });
+  return Object.assign(store, initialState || {});
 }
 
 /**

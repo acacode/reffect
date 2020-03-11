@@ -29,7 +29,8 @@ const production = plugins => [
       warnings: false,
       arguments: true,
       unsafe_Function: true,
-      module: true
+      module: true,
+      passes: 15
     }
   })
 ];
