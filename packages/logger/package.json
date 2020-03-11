@@ -1,6 +1,6 @@
 {
   "name": "@reffect/logger",
-  "version": "0.0.2-alpha",
+  "version": "0.0.3-alpha",
   "description": "logger middleware for Reffect",
   "scripts": {
     "build": "rollup -c",

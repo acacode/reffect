@@ -42,7 +42,7 @@ export const logger: Middleware<any> = <Store extends object>(
         "\r\nprevious state: ",
         prevState,
         "\r\ncurrrent state: ",
-        curState
+        { ...curState, ...(partialUpdate || {}) }
       ]);
     };
 
