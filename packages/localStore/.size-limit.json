@@ -1,0 +1,17 @@
+[
+  {
+    "path": "reffect-localstore.es.js",
+    "webpack": false,
+    "limit": "350 B"
+  },
+  {
+    "path": "reffect-localstore.cjs.js",
+    "webpack": false,
+    "limit": "350 B"
+  },
+  {
+    "path": "reffect-localstore.umd.js",
+    "webpack": false,
+    "limit": "450 B"
+  }
+]

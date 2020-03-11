@@ -85,7 +85,7 @@ export function createStore<Store extends object>(
     )
   });
 
-  return Object.assign(store, initialState || {});
+  return Object.assign(store, { ...storeManager.initialState });
 }
 
 /**
