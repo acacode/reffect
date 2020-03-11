@@ -1,7 +1,7 @@
 {
   "name": "@reffect/localstore",
-  "version": "0.0.1-alpha",
-  "description": "logger middleware for Reffect",
+  "version": "0.0.2-alpha",
+  "description": "localstore middleware for Reffect",
   "scripts": {
     "build": "rollup -c",
     "size": "size-limit"
@@ -12,11 +12,11 @@
   "private": false,
   "sideEffects": false,
   "source": "index.ts",
-  "main": "reffect-logger.cjs.js",
+  "main": "reffect-localstore.cjs.js",
   "typings": "index.ts",
-  "umd:main": "reffect-logger.umd.js",
-  "jsnext:main": "reffect-logger.es.js",
-  "module": "reffect-logger.es.js",
+  "umd:main": "reffect-localstore.umd.js",
+  "jsnext:main": "reffect-localstore.es.js",
+  "module": "reffect-localstore.es.js",
   "peerDependencies": {
     "@reffect/core": "^0.0.21-alpha"
   },
@@ -41,8 +41,8 @@
   "files": [
     "LICENSE",
     "index.ts",
-    "reffect-logger.*.js",
-    "reffect-logger.*.js.map"
+    "reffect-localstore.*.js",
+    "reffect-localstore.*.js.map"
   ],
   "keywords": [
     "redux",
@@ -58,5 +58,5 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "fcdb0059a1379d870444a5684bc04c6d60b443e9"
+  "gitHead": "a395e6d0e21d6417350d39b1ecf8784a4fb5d917"
 }
