@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - "node"
+
+cache:
+  directories:
+    - "node_modules"
+
+install:
+  - npm i
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - npm run build
+
+notifications:
+  slack:
+    rooms:
+      secure: hgqCN/3n+bTOJ/HMvMacAMrSqnmQalvSOxDJAxPYXpmJKxGlyd69AOyrnL3NYNzKX52kbg04Oprzfpc8GX74ev52MvoH6asRW4/xRro6ePlFwezrx9225t9BDJPh0TpTosujZpF6mUQ2d0iyMmsbxzFjZa/5u1ux9oFwFCI7vveWGRGE7uJRXmd3x2VxHCNSbUoVHnw3zvo5HSNHI49i4MGB04j2w35Y4wzY7uHovG01TK9ridQkl34DmUJ+Sfm15zcbVag4CC8avb549VgqHzKUKzEFzKN10YlaWhDoBYjyncsA+/1cj3omWtsPLyPUzAQFBR2THpzaEDwfl3RYDHaLQ1uR+OIIKVogIQDK7ope36yKWYtRXeGvEkruksn9xEt584mvAc1f//od1sEFlKPJWu4O4z6x1eC4336jwxUrRpuLYTifnzGYI6BrewUQytVRhJcvvwb6whlhATjateIlFjHcRU8ncmjLWmS42JwMbYD8+vEKmg2OYBackje5GivbJJ9xTqXMDPcyDusQr6RYYPI/2xM6HM2mV0yTazYwe4t4s5bdSggZe187AbqJLe8nc78qPnTiwOBBBxUNBeRXAMm2QJrtp1mX8NyDznFbMH9hVlVGu3tHoZdC5jTyHJhw75ULQnMKR8HxiV/aCgp3xgyYG7qau6GDkcpbeHo=
