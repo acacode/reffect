@@ -17,9 +17,7 @@
   "umd:main": "reffect-logger.umd.js",
   "jsnext:main": "reffect-logger.es.js",
   "module": "reffect-logger.es.js",
-  "peerDependencies": {
-    "@reffect/core": "^1.0.0"
-  },
+  "peerDependencies": { "@reffect/core": "^1.0.0" },
   "devDependencies": {
     "@reffect/core": "^1.0.0",
     "@size-limit/preset-small-lib": "^4.2.1",
@@ -45,5 +43,5 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "fcdb0059a1379d870444a5684bc04c6d60b443e9"
+  "gitHead": "2494f84af1dd1e096968329ef047cb1448fa6582"
 }
