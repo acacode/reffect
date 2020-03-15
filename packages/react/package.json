@@ -1,6 +1,6 @@
 {
   "name": "@reffect/react",
-  "version": "0.0.7-alpha",
+  "version": "1.0.0",
   "description": "React bindings for Reffect",
   "scripts": {
     "build": "node ../../build.js",
@@ -18,11 +18,11 @@
   "jsnext:main": "reffect-react.es.js",
   "module": "reffect-react.es.js",
   "peerDependencies": {
-    "@reffect/core": "^0.0.14-alpha",
+    "@reffect/core": "^1.0.0",
     "react": "^16.13.0"
   },
   "devDependencies": {
-    "@reffect/core": "^0.0.14-alpha",
+    "@reffect/core": "^1.0.0",
     "@size-limit/preset-small-lib": "^4.2.1",
     "@types/react": "^16.9.23",
     "react": "^16.13.0",

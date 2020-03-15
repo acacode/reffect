@@ -1,6 +1,6 @@
 {
   "name": "@reffect/core",
-  "version": "0.0.22-alpha",
+  "version": "1.0.0",
   "description": "The state manager",
   "scripts": {
     "build": "node ../../build.js",

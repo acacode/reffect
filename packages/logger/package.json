@@ -1,6 +1,6 @@
 {
   "name": "@reffect/logger",
-  "version": "0.0.4-alpha",
+  "version": "1.0.0",
   "description": "logger middleware for Reffect",
   "scripts": {
     "build": "node ../../build.js",
@@ -18,10 +18,10 @@
   "jsnext:main": "reffect-logger.es.js",
   "module": "reffect-logger.es.js",
   "peerDependencies": {
-    "@reffect/core": "^0.0.20-alpha"
+    "@reffect/core": "^1.0.0"
   },
   "devDependencies": {
-    "@reffect/core": "^0.0.20-alpha",
+    "@reffect/core": "^1.0.0",
     "@size-limit/preset-small-lib": "^4.2.1",
     "size-limit": "^4.2.1"
   },
