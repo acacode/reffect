@@ -1,19 +1,23 @@
 import { StoreManager, Watcher, Middleware } from "@reffect/core";
 
-export const localstore: Middleware<any> = <Store extends object>(
-  storeManager: StoreManager<Store>
-) => {
+export const localstore: Middleware<any> = <Store extends object>(storeManager: StoreManager<Store>) => {
   const localStorageKey = `@reffect/store/${storeManager.name}`;
   const localStorageValue = localStorage.getItem(localStorageKey);
   if (localStorageValue !== null) {
     storeManager.initialState = JSON.parse(localStorageValue);
   }
 
+  let lastStateSnapshot: object = {};
+  let localStorageUpdateTimer: any = null;
+
   const watcher: Watcher<Store> = (partialUpdate, prevState, curState) => {
-    localStorage.setItem(
-      localStorageKey,
-      JSON.stringify({ ...curState, ...(partialUpdate || {}) })
-    );
+    clearTimeout(localStorageUpdateTimer);
+
+    Object.assign(lastStateSnapshot, { ...curState, ...(partialUpdate || {}) });
+
+    localStorageUpdateTimer = setTimeout(() => {
+      localStorage.setItem(localStorageKey, JSON.stringify(lastStateSnapshot));
+    }, 144);
   };
 
   storeManager.watch(watcher);
