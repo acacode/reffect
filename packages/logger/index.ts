@@ -1,14 +1,8 @@
-import { StoreManager, Watcher, Middleware } from "@reffect/core";
+import { StoreManager, Watcher } from "@reffect/core";
 
-export const logger: Middleware<any> = <Store extends object>(
-  storeManager: StoreManager<Store>
-) => {
+export const logger = <Store extends object>(storeManager: StoreManager<Store>) => {
   if (process.env.NODE_ENV === "development") {
-    const log = (
-      component: string,
-      event: string,
-      additionalOutput: any[] = []
-    ) => {
+    const log = (component: string, event: string, additionalOutput: any[] = []) => {
       const beatifyComponentLabel = Array(14)
         .fill(" ")
         .map((char, i) => component[i] || char)
@@ -17,7 +11,7 @@ export const logger: Middleware<any> = <Store extends object>(
         `🛠️ %c@reffect/%c${beatifyComponentLabel}`,
         "color:#5777ff; padding: 0 0 0 4px;font-weight: bold;",
         "color:#ff2318; margin-right: 2px;font-weight: bold",
-        `[${event}]`
+        `[${event}]`,
       );
       console.log(...additionalOutput);
       console.groupCollapsed("%ctrace:", "color:#7e7e7e; font-weight: normal;");
@@ -26,23 +20,16 @@ export const logger: Middleware<any> = <Store extends object>(
       console.groupEnd();
     };
 
-    log(`store/${storeManager.name}`, "initialize", [
-      "initial state: ",
-      { ...storeManager.initialState }
-    ]);
+    log(`store/${storeManager.name}`, "initialize", ["initial state: ", { ...storeManager.initialState }]);
 
-    const watcher: Watcher<Store> = (
-      partialUpdate: any,
-      prevState: any,
-      curState: any
-    ) => {
+    const watcher: Watcher<Store> = (partialUpdate: any, prevState: any, curState: any) => {
       log(`store/${storeManager.name}`, "store update", [
         "payload:        ",
         partialUpdate,
         "\r\nprevious state: ",
         prevState,
         "\r\ncurrrent state: ",
-        { ...curState, ...(partialUpdate || {}) }
+        { ...curState, ...(partialUpdate || {}) },
       ]);
     };
 

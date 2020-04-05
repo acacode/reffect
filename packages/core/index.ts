@@ -34,6 +34,12 @@ export const manageStore = <Store extends object>(store: Store): StoreManager<St
   return store[storeManagerKey];
 };
 
+// TODO:
+// export function createStore<Store extends object>(
+//   initialState?: Partial<Store>,
+//   middlewares?: Middleware<Store>[],
+// ): Store;
+
 export function createStore<Store extends object>(
   storeName?: string,
   initialState?: Partial<Store>,
@@ -48,7 +54,7 @@ export function createStore<Store extends object>(
 
 export function createStore<Store extends object>(
   param1?: any,
-  param2: any = defaultStoreName,
+  param2?: any,
   middlewares?: Middleware<Store>[],
 ): Store {
   const [storeName, initialState] = typeof param1 === "string" ? [param1, param2] : [param2, param1];
@@ -57,7 +63,7 @@ export function createStore<Store extends object>(
 
   const storeManager: StoreManager<Store> = {
     initialState: { ...(initialState || {}) },
-    name: storeName,
+    name: storeName || defaultStoreName,
     storeId: createUid(),
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {

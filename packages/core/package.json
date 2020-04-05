@@ -1,6 +1,6 @@
 {
   "name": "@reffect/core",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "The state manager",
   "scripts": {
     "build": "node ../../build/build.js",
@@ -58,5 +58,5 @@
     "url": "https://github.com/acacode/reffect/issues"
   },
   "homepage": "https://github.com/acacode/reffect",
-  "gitHead": "391aa578edc2090cbd45d68785e0d7ea4d8dc731"
+  "gitHead": "7609e69352bbfaa334a353f536bd1128818ba966"
 }

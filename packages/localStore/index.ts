@@ -1,6 +1,6 @@
-import { StoreManager, Watcher, Middleware } from "@reffect/core";
+import { StoreManager, Watcher } from "@reffect/core";
 
-export const localstore: Middleware<any> = <Store extends object>(storeManager: StoreManager<Store>) => {
+export const localstore = <Store extends object>(storeManager: StoreManager<Store>) => {
   const localStorageKey = `@reffect/store/${storeManager.name}`;
   const localStorageValue = localStorage.getItem(localStorageKey);
   if (localStorageValue !== null) {
