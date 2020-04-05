@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "logger middleware for Reffect",
   "scripts": {
-    "build": "node ../../build.js",
+    "build": "node ../../build/build.js",
     "size": "size-limit"
   },
   "author": "acacode",

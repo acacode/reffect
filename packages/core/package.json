@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "description": "The state manager",
   "scripts": {
-    "build": "node ../../build.js",
+    "build": "node ../../build/build.js",
     "size": "size-limit"
   },
   "author": "acacode",
