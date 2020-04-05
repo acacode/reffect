@@ -26,8 +26,12 @@
   "files": [
     "LICENSE",
     "index.ts",
-    "reffect-logger.*.js",
-    "reffect-logger.*.js.map"
+    "reffect-logger.cjs.js",
+    "reffect-logger.cjs.js.map",
+    "reffect-logger.es.js",
+    "reffect-logger.es.js.map",
+    "reffect-logger.umd.js",
+    "reffect-logger.umd.js.map"
   ],
   "keywords": [
     "redux",

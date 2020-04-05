@@ -70,7 +70,14 @@ updatePackageJson(paths.packageJson, {
   /** --------------------------------------------------- */
 
   /** list of files which contains in installed package */
-  files: ["LICENSE", inputFileName, `${fileName}.*.js`, `${fileName}.*.js.map`]
+  files: [
+    "LICENSE",
+    inputFileName,
+    ...Object.values(buildConfigsMap).reduce(
+      (outputFileNames, { outputFileName }) => [...outputFileNames, outputFileName, `${outputFileName}.map`],
+      []
+    )
+  ]
 });
 
 Promise.all(

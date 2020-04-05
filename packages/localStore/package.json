@@ -26,8 +26,12 @@
   "files": [
     "LICENSE",
     "index.ts",
-    "reffect-localstore.*.js",
-    "reffect-localstore.*.js.map"
+    "reffect-localstore.cjs.js",
+    "reffect-localstore.cjs.js.map",
+    "reffect-localstore.es.js",
+    "reffect-localstore.es.js.map",
+    "reffect-localstore.umd.js",
+    "reffect-localstore.umd.js.map"
   ],
   "keywords": [
     "redux",

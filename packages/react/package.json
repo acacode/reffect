@@ -31,8 +31,12 @@
   "files": [
     "LICENSE",
     "index.ts",
-    "reffect-react.*.js",
-    "reffect-react.*.js.map"
+    "reffect-react.cjs.js",
+    "reffect-react.cjs.js.map",
+    "reffect-react.es.js",
+    "reffect-react.es.js.map",
+    "reffect-react.umd.js",
+    "reffect-react.umd.js.map"
   ],
   "keywords": [
     "redux",
