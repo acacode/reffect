@@ -59,7 +59,7 @@ const createBuildConfig = ({
           sourceMap: false,
           strictNullChecks: true,
           suppressImplicitAnyIndexErrors: true,
-          exclude: ["node_modules", "**/*.spec.ts"]
+          exclude: ["node_modules", "**/*.spec.ts", "**/*.test.ts"]
         }),
         ...plugins
       ]

@@ -1,3 +1,9 @@
+# 1.2.1
+
+Internal:
+
+1. Add unit tests
+
 # 1.2.0
 
 Breaking changes:

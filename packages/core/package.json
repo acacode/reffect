@@ -1,9 +1,10 @@
 {
   "name": "@reffect/core",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "The state manager",
   "scripts": {
     "build": "node ../../build/build.js",
+    "test": "ts-mocha -p ../../tsconfig.test.json tests/*.test.ts",
     "size": "size-limit"
   },
   "author": "acacode",

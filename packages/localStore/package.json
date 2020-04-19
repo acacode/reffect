@@ -1,6 +1,6 @@
 {
   "name": "@reffect/localstore",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "localstore middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",
@@ -17,11 +17,9 @@
   "umd:main": "reffect-localstore.umd.js",
   "jsnext:main": "reffect-localstore.es.js",
   "module": "reffect-localstore.es.js",
-  "peerDependencies": {
-    "@reffect/core": "^1.0.0"
-  },
+  "peerDependencies": { "@reffect/core": "^1.2.0" },
   "devDependencies": {
-    "@reffect/core": "^1.0.0",
+    "@reffect/core": "^1.2.0",
     "@size-limit/preset-small-lib": "^4.2.1",
     "size-limit": "^4.2.1"
   },
