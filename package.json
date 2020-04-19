@@ -12,7 +12,8 @@
     "publish:i": "lerna publish from-package",
     "publish:ci": "lerna publish from-package --yes --legacy-auth ${NPM_TOKEN}",
     "deps:check": "find . -type f -name 'package.json' -not -path './.git/*' -not -path '*/node_modules/*' -execdir ncu ;",
-    "deps:upgrade": "find . -type f -name 'package.json' -not -path './.git/*' -not -path '*/node_modules/*' -execdir ncu --upgrade ;"
+    "deps:upgrade": "find . -type f -name 'package.json' -not -path './.git/*' -not -path '*/node_modules/*' -execdir ncu --upgrade ;",
+    "deps:clear": "rimraf ./node_modules ./packages/**/node_modules"
   },
   "author": "acacode",
   "license": "MIT",
@@ -40,6 +41,7 @@
     "npm-check-updates": "^4.0.4",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
+    "rimraf": "^3.0.2",
     "rollup": "^2.0.2",
     "rollup-plugin-terser": "^5.2.0",
     "ts-mocha": "^7.0.0",
