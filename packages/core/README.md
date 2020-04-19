@@ -21,7 +21,7 @@ Package which contains main features of [`Reffect`](https://github.com/acacode/r
 2. Effects - it is functions which creates via `effect(store, effectDeclaration)`.  
    Effect declaration can be `function`, `property name of store state`, or just `void`.
 
-Also `Reffect` have export `manageStore(store)` which gives extra features for additional packages(like watch for store changes, partial update)
+Also `Reffect` have export `manageStore(store)` which gives extra features for additional packages(like subscribe on store changes, partial update)
 
 ## How to use
 

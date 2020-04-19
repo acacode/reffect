@@ -1,4 +1,4 @@
-import { StoreManager, Watcher } from "@reffect/core";
+import { StoreManager, Subscriber } from "@reffect/core";
 
 export const localstore = <Store extends object>(storeManager: StoreManager<Store>) => {
   const localStorageKey = `@reffect/store/${storeManager.name}`;
@@ -10,7 +10,7 @@ export const localstore = <Store extends object>(storeManager: StoreManager<Stor
   let lastStateSnapshot: object = {};
   let localStorageUpdateTimer: any = null;
 
-  const watcher: Watcher<Store> = (partialUpdate, prevState, curState) => {
+  const subscriber: Subscriber<Store> = (partialUpdate, prevState, curState) => {
     clearTimeout(localStorageUpdateTimer);
 
     Object.assign(lastStateSnapshot, { ...curState, ...(partialUpdate || {}) });
@@ -20,6 +20,6 @@ export const localstore = <Store extends object>(storeManager: StoreManager<Stor
     }, 144);
   };
 
-  storeManager.watch(watcher);
+  storeManager.subscribe(subscriber);
   return storeManager;
 };

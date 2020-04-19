@@ -9,11 +9,11 @@ export const useStore = <Store extends object>(store: Store): Store => {
   const [state, triggerUpdate] = useReducer(reducer, store);
 
   useIsomorphicEffect(() => {
-    const watcher = () => triggerUpdate(store);
-    const { watch, unwatch } = manageStore(store);
+    const subscriber = () => triggerUpdate(store);
+    const { subscribe, unsubscribe } = manageStore(store);
 
-    watch(watcher);
-    return () => unwatch(watcher);
+    subscribe(subscriber);
+    return () => unsubscribe(subscriber);
   }, []);
 
   return state;

@@ -1,12 +1,12 @@
 type Action<A extends unknown[], R> = (...a: A) => R;
-export type Watcher<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
+export type Subscriber<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
 export type StoreManager<Store> = {
   name: string;
   initialState: Partial<Store>;
   partialUpdate: (store: Partial<Store>) => void;
   storeId: Symbol;
-  watch: (watcher: Watcher<Store>) => void;
-  unwatch: (watcher: Watcher<Store>) => void;
+  subscribe: (subscriber: Subscriber<Store>) => void;
+  unsubscribe: (subscriber: Subscriber<Store>) => void;
 };
 export type Middleware<Store extends object> = (
   storeManager: StoreManager<Store>,
@@ -34,11 +34,10 @@ export const manageStore = <Store extends object>(store: Store): StoreManager<St
   return store[storeManagerKey];
 };
 
-// TODO:
-// export function createStore<Store extends object>(
-//   initialState?: Partial<Store>,
-//   middlewares?: Middleware<Store>[],
-// ): Store;
+export function createStore<Store extends object>(
+  initialState?: Partial<Store>,
+  middlewares?: Middleware<Store>[],
+): Store;
 
 export function createStore<Store extends object>(
   storeName?: string,
@@ -57,25 +56,30 @@ export function createStore<Store extends object>(
   param2?: any,
   middlewares?: Middleware<Store>[],
 ): Store {
-  const [storeName, initialState] = typeof param1 === "string" ? [param1, param2] : [param2, param1];
+  const [storeName, initialState] =
+    typeof param1 === "string"
+      ? [param1, param2]
+      : Array.isArray(param2)
+      ? (middlewares = param2) && [null, param1]
+      : [param2, param1];
 
-  const watchers: Watcher<Store>[] = [];
+  const subscribers: Subscriber<Store>[] = [];
 
   const storeManager: StoreManager<Store> = {
-    initialState: { ...(initialState || {}) },
+    initialState: copy(initialState || {}),
     name: storeName || defaultStoreName,
     storeId: createUid(),
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {
-        const prevState = Object.assign({}, { ...store });
-        Object.assign(store, { ...storeUpdate });
-        watchers.forEach(watcher => watcher(storeUpdate, prevState, store));
+        const prevState = copy(store);
+        Object.assign(store, copy(storeUpdate));
+        subscribers.forEach(subscriber => subscriber(copy(storeUpdate), prevState, copy(store)));
       }
     },
-    watch: watcher => watchers.push(watcher),
-    unwatch: watcher => {
-      const index = watchers.indexOf(watcher);
-      watchers[index] && watchers.splice(index, 1);
+    subscribe: subscriber => subscribers.push(subscriber),
+    unsubscribe: subscriber => {
+      const index = subscribers.indexOf(subscriber);
+      subscribers[index] && subscribers.splice(index, 1);
     },
   };
 
@@ -86,7 +90,7 @@ export function createStore<Store extends object>(
     ),
   });
 
-  return Object.assign(store, { ...storeManager.initialState });
+  return Object.assign(store, copy(storeManager.initialState));
 }
 
 /**
@@ -155,7 +159,7 @@ export function effect<Store extends object>(store: Store, param: any = null): a
   return <A extends UnknownArgs>(...args: A): any => {
     let update: any = void 0;
 
-    if (args.length === 1 && !param && typeof args[0] === "object") {
+    if (args.length === 1 && !param && isObject(args[0])) {
       update = args[0];
     } else if (args.length === 1 && store.hasOwnProperty(param)) {
       update = { [param]: args[0] };
@@ -172,3 +176,17 @@ export function effect<Store extends object>(store: Store, param: any = null): a
     }
   };
 }
+
+const isObject = (obj: unknown) => typeof obj === "object";
+
+const copy = (data: object): any => {
+  if (null == data || !isObject(data)) return data;
+  if (data instanceof Date) return new Date(data.getTime());
+  if (data instanceof Array) return data.map(copy);
+
+  var newObject = {};
+  for (var key in data) {
+    newObject[key] = isObject(data[key]) ? copy(data[key]) : data[key];
+  }
+  return newObject;
+};

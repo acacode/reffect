@@ -1,6 +1,6 @@
 {
   "name": "@reffect/logger",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "logger middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",
@@ -47,5 +47,5 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "7609e69352bbfaa334a353f536bd1128818ba966"
+  "gitHead": "1afbd805f4eeea8c25c3f01f112a6fb268adbc39"
 }
