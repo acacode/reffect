@@ -17,7 +17,9 @@
   "umd:main": "reffect-localstore.umd.js",
   "jsnext:main": "reffect-localstore.es.js",
   "module": "reffect-localstore.es.js",
-  "peerDependencies": { "@reffect/core": "^1.2.0" },
+  "peerDependencies": {
+    "@reffect/core": "^1.2.0"
+  },
   "devDependencies": {
     "@reffect/core": "^1.2.0",
     "@size-limit/preset-small-lib": "^4.2.1",
@@ -47,5 +49,5 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "312c9305d9dc3e48633b86d881e2df86fb39a178"
+  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
 }
