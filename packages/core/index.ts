@@ -22,16 +22,14 @@ type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
 
 type UnknownArgs = unknown[] | [];
 
-const createUid = () => Symbol("store_id");
-
-const storeManagerKey = createUid();
+const reffectKey = Symbol("reffect_key");
 
 const defaultStoreName = "unknown-store";
 
 export const manageStore = <Store extends object>(store: Store): StoreManager<Store> => {
-  if (!store[storeManagerKey]) throw new Error("Received wrong store");
+  if (!store[reffectKey]) console.error("Received wrong store", store);
 
-  return store[storeManagerKey];
+  return store[reffectKey];
 };
 
 export function createStore<Store extends object>(
@@ -68,7 +66,7 @@ export function createStore<Store extends object>(
   const storeManager: StoreManager<Store> = {
     initialState: copy(initialState || {}),
     name: storeName || defaultStoreName,
-    storeId: createUid(),
+    storeId: Symbol("store_id"),
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {
         const prevState = copy(store);
@@ -84,7 +82,7 @@ export function createStore<Store extends object>(
   };
 
   const store = Object.create({
-    [storeManagerKey]: (middlewares || []).reduce(
+    [reffectKey]: (middlewares || []).reduce(
       (storeManager, middleware) => middleware(storeManager, param1),
       storeManager,
     ),
@@ -104,7 +102,9 @@ export function createStore<Store extends object>(
  *  someOtherStoreKey: 22,
  * })
  */
-export function effect<Store extends object, D extends Partial<Store> = Partial<Store>>(store: Store): Action<[D], D>;
+export function effect<Store extends object, Update extends Partial<Store> = Partial<Store>>(
+  store: Store,
+): Action<[Update], void>;
 
 /**
  * **Property effect**
@@ -129,9 +129,9 @@ export function effect<Store extends object, P extends keyof Store = keyof Store
  */
 export function effect<
   Store extends object,
-  Input extends UnknownArgs = UnknownArgs,
+  InputArgs extends UnknownArgs = UnknownArgs,
   Update extends Partial<Store> = Partial<Store>
->(store: Store, effect: Action<Input, StoreUpdate<Store, Update> | void>): Action<Input, void>;
+>(store: Store, effect: Action<InputArgs, StoreUpdate<Store, Update> | void>): Action<InputArgs, void>;
 
 /**
  * **Async effect**
@@ -149,9 +149,12 @@ export function effect<
  */
 export function effect<
   Store extends object,
-  Input extends UnknownArgs = UnknownArgs,
+  InputArgs extends UnknownArgs = UnknownArgs,
   Update extends Partial<Store> = Partial<Store>
->(store: Store, asyncAction: Action<Input, Promise<StoreUpdate<Store, Update> | void>>): Action<Input, Promise<void>>;
+>(
+  store: Store,
+  asyncAction: Action<InputArgs, Promise<StoreUpdate<Store, Update> | void>>,
+): Action<InputArgs, Promise<void>>;
 
 export function effect<Store extends object>(store: Store, param: any = null): any {
   const { partialUpdate } = manageStore(store);
@@ -159,25 +162,28 @@ export function effect<Store extends object>(store: Store, param: any = null): a
   return <A extends UnknownArgs>(...args: A): any => {
     let update: any = void 0;
 
+    // defining what update case it is
     if (args.length === 1 && !param && isObject(args[0])) {
+      // effect(store)({ param: "value" })
       update = args[0];
     } else if (args.length === 1 && store.hasOwnProperty(param)) {
+      // effect(store, "param")("value")
       update = { [param]: args[0] };
     } else {
+      // effect(store, () => ({ param: "value" }))
+      // effect(store, async () => ({ param: "value" }))
       update = param(...args);
     }
 
     if (update instanceof Promise) {
-      return update.then(value => {
-        partialUpdate(value);
-      });
+      update.then(partialUpdate);
     } else {
-      partialUpdate(update as Partial<Store>);
+      partialUpdate(update);
     }
   };
 }
 
-const isObject = (obj: unknown) => typeof obj === "object";
+const isObject = (obj: unknown): obj is object => typeof obj === "object";
 
 const copy = (data: object): any => {
   if (null == data || !isObject(data)) return data;
