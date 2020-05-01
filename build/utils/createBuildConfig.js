@@ -32,7 +32,7 @@ const createBuildConfig = ({
       output: {
         file: outputPathToFile,
         format: outputFormat,
-        sourcemap: false,
+        sourcemap,
         ...commonOutput
       },
       external: id => externalDeps.includes(id),
@@ -64,7 +64,7 @@ const createBuildConfig = ({
             noImplicitReturns: true,
             noImplicitThis: true,
             noUnusedLocals: true,
-            sourceMap: sourcemap,
+            sourceMap: false,
             strictNullChecks: true,
             suppressImplicitAnyIndexErrors: true,
             exclude: ["node_modules", "**/*.spec.ts", "**/*.test.ts"]

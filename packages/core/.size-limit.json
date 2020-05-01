@@ -2,7 +2,7 @@
   {
     "path": "reffect.es.js",
     "webpack": false,
-    "limit": "730 B"
+    "limit": "740 B"
   },
   {
     "path": "reffect.cjs.js",

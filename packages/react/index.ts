@@ -1,14 +1,12 @@
-import { useReducer, useEffect, useLayoutEffect, useState } from "react";
-import { getManager, EffectState, Action } from "@reffect/core";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { manage, EffectState, Action } from "@reffect/core";
 
 const useIsomorphicEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-const reducer = (state: any, newState: any) => ({ ...newState });
-
 export const useStore = <Store extends object>(store: Store): Store => {
-  const [state, setState] = useReducer(reducer, store);
+  const [state, setState] = useState<Store>(store);
 
-  useIsomorphicEffect(() => getManager(store).subscribe(() => setState(store)), []);
+  useIsomorphicEffect(() => manage(store).subscribe(() => setState(store)), []);
 
   return state;
 };
@@ -16,7 +14,7 @@ export const useStore = <Store extends object>(store: Store): Store => {
 export const useEffectState = (effect: Action<unknown[], unknown>) => {
   const [state, setState] = useState<EffectState | null>(null);
 
-  useIsomorphicEffect(() => getManager(effect).subscribe(state => setState(state)), []);
+  useIsomorphicEffect(() => manage(effect).subscribe(state => setState(state)), []);
 
   return {
     pending: state === EffectState.Pending,

@@ -2,7 +2,7 @@ const reffectKey = Symbol("reffect_key");
 const defaultStoreName = "unknown-store";
 
 export type Action<A extends unknown[], R> = (...a: A) => R;
-export type StoreSubscriber<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
+export type StoreSubscriber<Store> = (partialUpdate: Partial<Store>, previousState: Store, currentState: Store) => void;
 export type EffectSubscriber = (state: EffectState) => void;
 export type StoreManager<Store> = {
   name: string;
@@ -15,7 +15,7 @@ export type EffectManager = {
   state: EffectState | null;
   subscribe: (subscriber: EffectSubscriber) => () => void;
 };
-export type Middleware<Store extends object> = (
+export type StoreMiddleware<Store extends object> = (
   storeManager: StoreManager<Store>,
   initialState: Partial<Store>,
 ) => StoreManager<Store>;
@@ -35,42 +35,40 @@ export const enum EffectState {
 
 type UnknownArgs = unknown[] | [];
 
-export function getManager<ManagingValue extends object | Action<unknown[], unknown>>(
+export function manage<ManagingValue extends object | Action<unknown[], unknown>>(
   value: ManagingValue,
 ): ManagingValue extends Action<unknown[], unknown> ? EffectManager : StoreManager<ManagingValue> {
   if (!value || !value[reffectKey]) console.error("received wrong value", value);
   return value[reffectKey];
 }
 
-export function createStore<Store extends object>(
+export function store<Store extends object>(
   initialState?: Partial<Store>,
-  middlewares?: Middleware<Store>[],
+  middlewares?: StoreMiddleware<Store>[],
 ): Store;
 
-export function createStore<Store extends object>(
+export function store<Store extends object>(
   storeName?: string,
   initialState?: Partial<Store>,
-  middlewares?: Middleware<Store>[],
+  middlewares?: StoreMiddleware<Store>[],
 ): Store;
 
-export function createStore<Store extends object>(
+export function store<Store extends object>(
   initialState?: Partial<Store>,
   storeName?: string,
-  middlewares?: Middleware<Store>[],
+  middlewares?: StoreMiddleware<Store>[],
 ): Store;
 
-export function createStore<Store extends object>(
-  param1?: any,
-  param2?: any,
-  middlewares?: Middleware<Store>[],
-): Store {
+export function store<Store extends object>(param1?: any, param2?: any, middlewares?: StoreMiddleware<Store>[]): Store {
+  // defining what param is storeName and what is initialState
   const [storeName, initialState] =
     typeof param1 === "string"
       ? [param1, param2]
       : Array.isArray(param2)
       ? (middlewares = param2) && [null, param1]
       : [param2, param1];
-  const { publish, subscribe } = createPubSub<StoreSubscriber<Store>, [Partial<Store>, Store, Store]>();
+
+  const [publish, subscribe] = createPubSub<StoreSubscriber<Store>, [Partial<Store>, Store, Store]>();
 
   const storeManager: StoreManager<Store> = {
     initialState: copy(initialState || {}),
@@ -162,8 +160,8 @@ export function effect<
 ): Action<InputArgs, Promise<void>>;
 
 export function effect<Store extends object>(store: Store, param: any = null): any {
-  const { partialUpdate } = getManager(store);
-  const { publish, subscribe } = createPubSub<EffectSubscriber, [EffectState]>();
+  const { partialUpdate } = manage(store);
+  const [publish, subscribe] = createPubSub<EffectSubscriber, [EffectState]>();
 
   const effectManager: EffectManager = {
     state: null,
@@ -236,16 +234,16 @@ const copy = (data: object): any => {
 const createPubSub = <Subscriber extends Function, PubArgs extends unknown[]>() => {
   const subscribers: Subscriber[] = [];
 
-  return {
-    publish: (...args: PubArgs) => {
+  return [
+    (...args: PubArgs) => {
       subscribers.forEach(subscriber => subscriber(...args));
     },
-    subscribe: (subscriber: Subscriber) => {
+    (subscriber: Subscriber) => {
       const index = subscribers.push(subscriber) - 1;
 
       return () => {
         subscribers.splice(index, 1);
       };
     },
-  };
+  ] as const;
 };
