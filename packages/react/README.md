@@ -11,27 +11,40 @@ Reffect — is a declarative and reactive multi-store state manager for JavaScri
 
 # @reffect/react
 
-React bindings for [`Reffect`](https://github.com/acacode/reffect)
+bindings (hooks) for [`React`](https://github.com/facebook/react)
+
+Hooks:
+
+`useStore(store)` - returns actual store state  
+`useEffectState(effect)` - returns effect's state flags (`{ pending: boolean, fail: boolean, done: boolean }`)
 
 ## How to use
 
 ```tsx
 import React from "react";
-import { useStore } from "@reffect/react";
-import { keyboardsStore, selectKeyboard } from "path/to/store";
+import { useStore, useEffectState } from "@reffect/react";
+import { keyboardsStore, selectKeyboard, getAllKeyboards } from "path/to/store";
 // keyboardsStore it is store created via `createStore()`
 // selectKeyboard it is effect created via `effect()`
+// getAllKeyboards it is async effect created via `effect()`
 
 const KeyboardsData = () => {
   const { list } = useStore(keyboardsStore);
+  const { pending } = useEffectState(getAllKeyboards);
+
+  useEffect(() => {
+    getAllKeyboards();
+  }, []);
 
   return (
     <div>
-      {list.map(keyboard => (
-        <div key={keyboard.id} onClick={() => selectKeyboard(keyboard.id)}>
-          {keyboard.name}
-        </div>
-      ))}
+      {pending && <div>Loading</div>}
+      {!pending &&
+        list.map(keyboard => (
+          <div key={keyboard.id} onClick={() => selectKeyboard(keyboard.id)}>
+            {keyboard.name}
+          </div>
+        ))}
     </div>
   );
 };

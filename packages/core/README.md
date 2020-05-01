@@ -21,21 +21,21 @@ Package which contains main features of [`Reffect`](https://github.com/acacode/r
 2. Effects - it is functions which creates via `effect(store, effectDeclaration)`.  
    Effect declaration can be `function`, `property name of store state`, or just `void`.
 
-Also `Reffect` have export `getManager(store)` which gives extra internal features for additional packages(like subscribe on store changes, partial update)
+Also `Reffect` have export `manage(store)` which gives extra internal features for additional packages(like subscribe on store changes, partial update)
 
 ## How to use
 
 Create a store
 
 ```ts
-import { createStore } from "@reffect/core";
+import { store } from "@reffect/core";
 
 type KeyboardsState = {
   list: Keyboard[];
   selected?: Keyboard;
 };
 
-const keyboards = createStore<KeyboardsState>({ list: [] });
+const keyboards = store<KeyboardsState>({ list: [] });
 
 // keyboards.list -> []
 // Object.keys(keyboards) -> ["list"]
