@@ -44,8 +44,7 @@ describe("effect()", () => {
   });
 
   it("should be able to work with async actions", async () => {
-    const asyncUpdateStore = effect(store, async () => await { bar: "23" });
-    await asyncUpdateStore();
+    await effect(store, async () => ({ bar: "23" }))();
     expect(store).to.deep.equal({ ...initialState, bar: "23" });
   });
 });

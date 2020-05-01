@@ -1,3 +1,6 @@
+const reffectKey = Symbol("reffect_key");
+const defaultStoreName = "unknown-store";
+
 type Action<A extends unknown[], R> = (...a: A) => R;
 export type Subscriber<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
 export type StoreManager<Store> = {
@@ -7,6 +10,11 @@ export type StoreManager<Store> = {
   storeId: Symbol;
   subscribe: (subscriber: Subscriber<Store>) => void;
   unsubscribe: (subscriber: Subscriber<Store>) => void;
+};
+export type EffectManager = {
+  state: EffectState | null;
+  subscribe: (subscriber: (state: EffectState) => void) => void;
+  unsubscribe: (subscriber: (state: EffectState) => void) => void;
 };
 export type Middleware<Store extends object> = (
   storeManager: StoreManager<Store>,
@@ -20,17 +28,20 @@ type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
     : T
   : never;
 
+export const enum EffectState {
+  Loading = "loading",
+  Success = "success",
+  Error = "error",
+}
+
 type UnknownArgs = unknown[] | [];
 
-const reffectKey = Symbol("reffect_key");
-
-const defaultStoreName = "unknown-store";
-
-export const manageStore = <Store extends object>(store: Store): StoreManager<Store> => {
-  if (!store[reffectKey]) console.error("Received wrong store", store);
-
-  return store[reffectKey];
-};
+export function getManager<ManagingValue extends object | Action<unknown[], unknown>>(
+  value: ManagingValue,
+): ManagingValue extends Action<unknown[], unknown> ? EffectManager : StoreManager<ManagingValue> {
+  if (!value || !value[reffectKey]) console.error("received wrong value", value);
+  return value[reffectKey];
+}
 
 export function createStore<Store extends object>(
   initialState?: Partial<Store>,
@@ -157,9 +168,26 @@ export function effect<
 ): Action<InputArgs, Promise<void>>;
 
 export function effect<Store extends object>(store: Store, param: any = null): any {
-  const { partialUpdate } = manageStore(store);
+  const { partialUpdate } = getManager(store);
+  const subscribers: ((state: EffectState) => void)[] = [];
+  const effectManager: EffectManager = {
+    state: null,
+    subscribe: (subscriber: (state: EffectState) => void) => {
+      subscribers.push(subscriber);
+    },
+    unsubscribe: (subscriber: (state: EffectState) => void) => {
+      const index = subscribers.indexOf(subscriber);
+      subscribers[index] && subscribers.splice(index, 1);
+    },
+  };
 
-  return <A extends UnknownArgs>(...args: A): any => {
+  const updateActionState = (state: EffectState) => {
+    effectManager.state = state;
+    subscribers.forEach(subscriber => subscriber(state));
+  };
+
+  const action = <A extends UnknownArgs>(...args: A): any => {
+    updateActionState(EffectState.Loading);
     let update: any = void 0;
 
     // defining what update case it is
@@ -176,11 +204,29 @@ export function effect<Store extends object>(store: Store, param: any = null): a
     }
 
     if (update instanceof Promise) {
-      update.then(partialUpdate);
+      update
+        .then(updateData => {
+          partialUpdate(updateData);
+          updateActionState(EffectState.Success);
+        })
+        .catch(e => {
+          updateActionState(EffectState.Error);
+          throw e;
+        });
     } else {
-      partialUpdate(update);
+      try {
+        partialUpdate(update);
+      } catch (e) {
+        updateActionState(EffectState.Error);
+        throw e;
+      }
+      updateActionState(EffectState.Success);
     }
   };
+
+  action[reffectKey] = effectManager;
+
+  return action;
 }
 
 const isObject = (obj: unknown): obj is object => typeof obj === "object";

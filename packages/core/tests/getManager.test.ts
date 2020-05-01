@@ -1,11 +1,11 @@
-import { createStore, manageStore, StoreManager, Middleware } from "..";
+import { createStore, getManager, StoreManager, Middleware } from "..";
 import * as chai from "chai";
 import * as spies from "chai-spies";
 chai.use(spies);
 
 const { spy, expect } = chai;
 
-describe("manageStore()", () => {
+describe("getManager()", () => {
   const initialState = { foo: "bar", baz: [1, 2, 3], bar: "bar" };
   const storeName = "store-name";
   const middlewares: Middleware<typeof initialState>[] = [storeManager => storeManager];
@@ -15,7 +15,7 @@ describe("manageStore()", () => {
 
   beforeEach(() => {
     store = createStore(initialState, storeName, middlewares);
-    storeConfig = manageStore(store);
+    storeConfig = getManager(store);
   });
 
   it(`should have store name`, () => {

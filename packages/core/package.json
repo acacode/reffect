@@ -13,7 +13,7 @@
   "sideEffects": false,
   "source": "index.ts",
   "main": "reffect.cjs.js",
-  "typings": "index.ts",
+  "typings": "reffect.d.ts",
   "umd:main": "reffect.umd.js",
   "jsnext:main": "reffect.es.js",
   "module": "reffect.es.js",
@@ -36,6 +36,7 @@
   "files": [
     "LICENSE",
     "index.ts",
+    "reffect.d.ts",
     "reffect.cjs.js",
     "reffect.cjs.js.map",
     "reffect.es.js",
@@ -59,5 +60,6 @@
     "url": "https://github.com/acacode/reffect/issues"
   },
   "homepage": "https://github.com/acacode/reffect",
-  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
+  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c",
+  "typescript:main": "index.ts"
 }

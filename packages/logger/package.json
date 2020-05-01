@@ -13,7 +13,7 @@
   "sideEffects": false,
   "source": "index.ts",
   "main": "reffect-logger.cjs.js",
-  "typings": "index.ts",
+  "typings": "reffect-logger.d.ts",
   "umd:main": "reffect-logger.umd.js",
   "jsnext:main": "reffect-logger.es.js",
   "module": "reffect-logger.es.js",
@@ -26,6 +26,7 @@
   "files": [
     "LICENSE",
     "index.ts",
+    "reffect-logger.d.ts",
     "reffect-logger.cjs.js",
     "reffect-logger.cjs.js.map",
     "reffect-logger.es.js",
@@ -47,5 +48,6 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
+  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c",
+  "typescript:main": "index.ts"
 }

@@ -2,16 +2,16 @@
   {
     "path": "reffect.es.js",
     "webpack": false,
-    "limit": "700 B"
+    "limit": "730 B"
   },
   {
     "path": "reffect.cjs.js",
     "webpack": false,
-    "limit": "700 B"
+    "limit": "760 B"
   },
   {
     "path": "reffect.umd.js",
     "webpack": false,
-    "limit": "800 B"
+    "limit": "840 B"
   }
 ]
