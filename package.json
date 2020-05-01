@@ -56,16 +56,5 @@
       "post-commit": "git update-index -g"
     }
   },
-  "source": "index.ts",
-  "main": "reffect.cjs.js",
-  "typings": "index.ts",
-  "umd:main": "reffect.umd.js",
-  "jsnext:main": "reffect.es.js",
-  "module": "reffect.es.js",
-  "files": [
-    "LICENSE",
-    "index.ts",
-    "reffect.*.js",
-    "reffect.*.js.map"
-  ]
+  "files": []
 }
