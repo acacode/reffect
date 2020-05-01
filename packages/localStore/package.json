@@ -1,6 +1,6 @@
 {
   "name": "@reffect/localstore",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "localstore middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",

@@ -1,6 +1,6 @@
 {
   "name": "@reffect/logger",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "logger middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",
