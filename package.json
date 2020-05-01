@@ -43,6 +43,7 @@
     "pretty-quick": "^2.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.0.2",
+    "rollup-plugin-dts": "^1.4.0",
     "rollup-plugin-terser": "^5.2.0",
     "ts-mocha": "^7.0.0",
     "ts-node": "^8.8.2",
@@ -55,16 +56,5 @@
       "post-commit": "git update-index -g"
     }
   },
-  "source": "index.ts",
-  "main": "reffect.cjs.js",
-  "typings": "index.ts",
-  "umd:main": "reffect.umd.js",
-  "jsnext:main": "reffect.es.js",
-  "module": "reffect.es.js",
-  "files": [
-    "LICENSE",
-    "index.ts",
-    "reffect.*.js",
-    "reffect.*.js.map"
-  ]
+  "files": []
 }

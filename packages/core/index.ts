@@ -1,14 +1,20 @@
-type Action<A extends unknown[], R> = (...a: A) => R;
-export type Subscriber<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
+const reffectKey = Symbol("reffect_key");
+
+export type Action<A extends unknown[], R> = (...a: A) => R;
+export type StoreSubscriber<Store> = (partialUpdate: Partial<Store>, previousState: Store, currentState: Store) => void;
+export type EffectSubscriber = (state: EffectState) => void;
 export type StoreManager<Store> = {
   name: string;
   initialState: Partial<Store>;
   partialUpdate: (store: Partial<Store>) => void;
   storeId: Symbol;
-  subscribe: (subscriber: Subscriber<Store>) => void;
-  unsubscribe: (subscriber: Subscriber<Store>) => void;
+  subscribe: (subscriber: StoreSubscriber<Store>) => () => void;
 };
-export type Middleware<Store extends object> = (
+export type EffectManager = {
+  state: EffectState | null;
+  subscribe: (subscriber: EffectSubscriber) => () => void;
+};
+export type StoreMiddleware<Store extends object> = (
   storeManager: StoreManager<Store>,
   initialState: Partial<Store>,
 ) => StoreManager<Store>;
@@ -20,42 +26,40 @@ type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
     : T
   : never;
 
+export const enum EffectState {
+  Pending = "pending",
+  Done = "done",
+  Fail = "fail",
+}
+
 type UnknownArgs = unknown[] | [];
 
-const createUid = () => Symbol("store_id");
+export function manage<ManagingValue extends object | Action<unknown[], unknown>>(
+  value: ManagingValue,
+): ManagingValue extends Action<unknown[], unknown> ? EffectManager : StoreManager<ManagingValue> {
+  if (!value || !value[reffectKey]) console.error("received wrong value", value);
+  return value[reffectKey];
+}
 
-const storeManagerKey = createUid();
-
-const defaultStoreName = "unknown-store";
-
-export const manageStore = <Store extends object>(store: Store): StoreManager<Store> => {
-  if (!store[storeManagerKey]) throw new Error("Received wrong store");
-
-  return store[storeManagerKey];
-};
-
-export function createStore<Store extends object>(
+export function store<Store extends object>(
   initialState?: Partial<Store>,
-  middlewares?: Middleware<Store>[],
+  middlewares?: StoreMiddleware<Store>[],
 ): Store;
 
-export function createStore<Store extends object>(
+export function store<Store extends object>(
   storeName?: string,
   initialState?: Partial<Store>,
-  middlewares?: Middleware<Store>[],
+  middlewares?: StoreMiddleware<Store>[],
 ): Store;
 
-export function createStore<Store extends object>(
+export function store<Store extends object>(
   initialState?: Partial<Store>,
   storeName?: string,
-  middlewares?: Middleware<Store>[],
+  middlewares?: StoreMiddleware<Store>[],
 ): Store;
 
-export function createStore<Store extends object>(
-  param1?: any,
-  param2?: any,
-  middlewares?: Middleware<Store>[],
-): Store {
+export function store<Store extends object>(param1?: any, param2?: any, middlewares?: StoreMiddleware<Store>[]): Store {
+  // defining what param is storeName and what is initialState
   const [storeName, initialState] =
     typeof param1 === "string"
       ? [param1, param2]
@@ -63,28 +67,24 @@ export function createStore<Store extends object>(
       ? (middlewares = param2) && [null, param1]
       : [param2, param1];
 
-  const subscribers: Subscriber<Store>[] = [];
+  const [publish, subscribe] = createPubSub<StoreSubscriber<Store>, [Partial<Store>, Store, Store]>();
 
   const storeManager: StoreManager<Store> = {
     initialState: copy(initialState || {}),
-    name: storeName || defaultStoreName,
-    storeId: createUid(),
+    name: storeName || "unknown",
+    storeId: Symbol("store_id"),
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {
         const prevState = copy(store);
         Object.assign(store, copy(storeUpdate));
-        subscribers.forEach(subscriber => subscriber(copy(storeUpdate), prevState, copy(store)));
+        publish(copy(storeUpdate), prevState, copy(store));
       }
     },
-    subscribe: subscriber => subscribers.push(subscriber),
-    unsubscribe: subscriber => {
-      const index = subscribers.indexOf(subscriber);
-      subscribers[index] && subscribers.splice(index, 1);
-    },
+    subscribe,
   };
 
   const store = Object.create({
-    [storeManagerKey]: (middlewares || []).reduce(
+    [reffectKey]: (middlewares || []).reduce(
       (storeManager, middleware) => middleware(storeManager, param1),
       storeManager,
     ),
@@ -104,7 +104,9 @@ export function createStore<Store extends object>(
  *  someOtherStoreKey: 22,
  * })
  */
-export function effect<Store extends object, D extends Partial<Store> = Partial<Store>>(store: Store): Action<[D], D>;
+export function effect<Store extends object, Update extends Partial<Store> = Partial<Store>>(
+  store: Store,
+): Action<[Update], void>;
 
 /**
  * **Property effect**
@@ -129,9 +131,9 @@ export function effect<Store extends object, P extends keyof Store = keyof Store
  */
 export function effect<
   Store extends object,
-  Input extends UnknownArgs = UnknownArgs,
+  InputArgs extends UnknownArgs = UnknownArgs,
   Update extends Partial<Store> = Partial<Store>
->(store: Store, effect: Action<Input, StoreUpdate<Store, Update> | void>): Action<Input, void>;
+>(store: Store, effect: Action<InputArgs, StoreUpdate<Store, Update> | void>): Action<InputArgs, void>;
 
 /**
  * **Async effect**
@@ -149,35 +151,72 @@ export function effect<
  */
 export function effect<
   Store extends object,
-  Input extends UnknownArgs = UnknownArgs,
+  InputArgs extends UnknownArgs = UnknownArgs,
   Update extends Partial<Store> = Partial<Store>
->(store: Store, asyncAction: Action<Input, Promise<StoreUpdate<Store, Update> | void>>): Action<Input, Promise<void>>;
+>(
+  store: Store,
+  asyncAction: Action<InputArgs, Promise<StoreUpdate<Store, Update> | void>>,
+): Action<InputArgs, Promise<void>>;
 
 export function effect<Store extends object>(store: Store, param: any = null): any {
-  const { partialUpdate } = manageStore(store);
+  const { partialUpdate } = manage(store);
+  const [publish, subscribe] = createPubSub<EffectSubscriber, [EffectState]>();
 
-  return <A extends UnknownArgs>(...args: A): any => {
+  const effectManager: EffectManager = {
+    state: null,
+    subscribe,
+  };
+
+  const updateActionState = (state: EffectState) => {
+    effectManager.state = state;
+    publish(state);
+  };
+
+  const action = <A extends UnknownArgs>(...args: A): any => {
     let update: any = void 0;
 
+    updateActionState(EffectState.Pending);
+
+    // defining what update case it is
     if (args.length === 1 && !param && isObject(args[0])) {
+      // effect(store)({ param: "value" })
       update = args[0];
     } else if (args.length === 1 && store.hasOwnProperty(param)) {
+      // effect(store, "param")("value")
       update = { [param]: args[0] };
     } else {
+      // effect(store, () => ({ param: "value" }))
+      // effect(store, async () => ({ param: "value" }))
       update = param(...args);
     }
 
     if (update instanceof Promise) {
-      return update.then(value => {
-        partialUpdate(value);
-      });
+      update
+        .then(updateData => {
+          partialUpdate(updateData);
+          updateActionState(EffectState.Done);
+        })
+        .catch(e => {
+          updateActionState(EffectState.Fail);
+          throw e;
+        });
     } else {
-      partialUpdate(update as Partial<Store>);
+      try {
+        partialUpdate(update);
+      } catch (e) {
+        updateActionState(EffectState.Fail);
+        throw e;
+      }
+      updateActionState(EffectState.Done);
     }
   };
+
+  action[reffectKey] = effectManager;
+
+  return action;
 }
 
-const isObject = (obj: unknown) => typeof obj === "object";
+const isObject = (obj: unknown): obj is object => typeof obj === "object";
 
 const copy = (data: object): any => {
   if (null == data || !isObject(data)) return data;
@@ -189,4 +228,21 @@ const copy = (data: object): any => {
     newObject[key] = isObject(data[key]) ? copy(data[key]) : data[key];
   }
   return newObject;
+};
+
+const createPubSub = <Subscriber extends Function, PubArgs extends unknown[]>() => {
+  const subscribers: Subscriber[] = [];
+
+  return [
+    (...args: PubArgs) => {
+      subscribers.forEach(subscriber => subscriber(...args));
+    },
+    (subscriber: Subscriber) => {
+      const index = subscribers.push(subscriber) - 1;
+
+      return () => {
+        subscribers.splice(index, 1);
+      };
+    },
+  ] as const;
 };

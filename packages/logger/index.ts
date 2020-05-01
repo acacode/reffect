@@ -1,4 +1,4 @@
-import { StoreManager, Subscriber } from "@reffect/core";
+import { StoreManager, StoreSubscriber } from "@reffect/core";
 
 export const logger = <Store extends object>(storeManager: StoreManager<Store>) => {
   if (process.env.NODE_ENV === "development") {
@@ -22,7 +22,7 @@ export const logger = <Store extends object>(storeManager: StoreManager<Store>) 
 
     log(`store/${storeManager.name}`, "initialize", ["initial state: ", { ...storeManager.initialState }]);
 
-    const subscriber: Subscriber<Store> = (partialUpdate: any, prevState: any, curState: any) => {
+    const subscriber: StoreSubscriber<Store> = (partialUpdate: any, prevState: any, curState: any) => {
       log(`store/${storeManager.name}`, "store update", [
         "payload:        ",
         partialUpdate,

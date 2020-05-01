@@ -1,10 +1,10 @@
-import { createStore } from "..";
+import { store, StoreMiddleware } from "..";
 import { expect } from "chai";
 
-describe("createStore()", () => {
+describe("store()", () => {
   const initialState = { foo: "bar", baz: [1, 2, 3], bar: "bar" };
   const storeName = "store-name";
-  const middlewares = [];
+  const middlewares: StoreMiddleware<typeof initialState>[] = [];
 
   const initializeCases = [
     ["only initial state", [initialState]],
@@ -16,14 +16,14 @@ describe("createStore()", () => {
 
   initializeCases.forEach(([caseName, inputArgs]) => {
     describe(caseName, () => {
-      let store: object;
+      let testStore: object;
 
       beforeEach(() => {
-        store = createStore(...(inputArgs as any));
+        testStore = store(...(inputArgs as any));
       });
 
       it("return value should be equal to initial state", () => {
-        expect(store).to.deep.equal(initialState);
+        expect(testStore).to.deep.equal(initialState);
       });
     });
   });

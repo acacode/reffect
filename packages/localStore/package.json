@@ -1,6 +1,6 @@
 {
   "name": "@reffect/localstore",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "localstore middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",
@@ -13,13 +13,11 @@
   "sideEffects": false,
   "source": "index.ts",
   "main": "reffect-localstore.cjs.js",
-  "typings": "index.ts",
+  "typings": "reffect-localstore.d.ts",
   "umd:main": "reffect-localstore.umd.js",
   "jsnext:main": "reffect-localstore.es.js",
   "module": "reffect-localstore.es.js",
-  "peerDependencies": {
-    "@reffect/core": "^1.2.0"
-  },
+  "peerDependencies": { "@reffect/core": "^1.2.0" },
   "devDependencies": {
     "@reffect/core": "^1.2.0",
     "@size-limit/preset-small-lib": "^4.2.1",
@@ -28,6 +26,7 @@
   "files": [
     "LICENSE",
     "index.ts",
+    "reffect-localstore.d.ts",
     "reffect-localstore.cjs.js",
     "reffect-localstore.cjs.js.map",
     "reffect-localstore.es.js",
@@ -49,5 +48,6 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
+  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c",
+  "typescript:main": "index.ts"
 }

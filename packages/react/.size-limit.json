@@ -7,11 +7,11 @@
   {
     "path": "reffect-react.cjs.js",
     "webpack": false,
-    "limit": "300 B"
+    "limit": "350 B"
   },
   {
     "path": "reffect-react.umd.js",
     "webpack": false,
-    "limit": "400 B"
+    "limit": "420 B"
   }
 ]

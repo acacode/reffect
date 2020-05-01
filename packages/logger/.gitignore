@@ -1,3 +1,4 @@
 reffect-logger.*.js
+reffect-logger.d.ts
 reffect-logger.*.js.map
 package-lock.json

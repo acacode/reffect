@@ -1,4 +1,4 @@
-import { createStore, effect, Middleware } from "..";
+import { store, effect, StoreMiddleware } from "..";
 import * as chai from "chai";
 
 const { expect } = chai;
@@ -6,46 +6,45 @@ const { expect } = chai;
 describe("effect()", () => {
   const initialState = { foo: "bar", baz: [1, 2, 3], bar: "bar" };
   const storeName = "store-name";
-  const middlewares: Middleware<typeof initialState>[] = [storeManager => storeManager];
+  const middlewares: StoreMiddleware<typeof initialState>[] = [storeManager => storeManager];
 
-  let store: typeof initialState;
+  let testStore: typeof initialState;
 
   beforeEach(() => {
-    store = createStore(initialState, storeName, middlewares);
+    testStore = store(initialState, storeName, middlewares);
   });
 
   it("should return void function", () => {
-    expect(effect(store, () => ({ bar: "22" }))()).to.equal(undefined);
+    expect(effect(testStore, () => ({ bar: "22" }))()).to.equal(undefined);
   });
 
   it("should update store without action", () => {
-    const updateStore = effect(store);
+    const updateStore = effect(testStore);
     updateStore({ bar: "22" });
-    expect(store).to.deep.equal({ ...initialState, bar: "22" });
+    expect(testStore).to.deep.equal({ ...initialState, bar: "22" });
   });
 
   it("should be able to only one store property", () => {
-    const updateStore = effect(store, "bar");
+    const updateStore = effect(testStore, "bar");
     updateStore("22");
-    expect(store).to.deep.equal({ ...initialState, bar: "22" });
+    expect(testStore).to.deep.equal({ ...initialState, bar: "22" });
   });
 
   it("should be able to update store via action", () => {
-    const updateStore = effect(store, (barValue: string) => ({ bar: barValue }));
+    const updateStore = effect(testStore, (barValue: string) => ({ bar: barValue }));
     updateStore("22");
-    expect(store).to.deep.equal({ ...initialState, bar: "22" });
+    expect(testStore).to.deep.equal({ ...initialState, bar: "22" });
   });
 
   it("should be able to update store via actions combination", () => {
-    const updateBar = effect(store, "bar");
-    const updateStore = effect(store, (barValue: string) => updateBar(barValue));
+    const updateBar = effect(testStore, "bar");
+    const updateStore = effect(testStore, (barValue: string) => updateBar(barValue));
     updateStore("22");
-    expect(store).to.deep.equal({ ...initialState, bar: "22" });
+    expect(testStore).to.deep.equal({ ...initialState, bar: "22" });
   });
 
   it("should be able to work with async actions", async () => {
-    const asyncUpdateStore = effect(store, async () => await { bar: "23" });
-    await asyncUpdateStore();
-    expect(store).to.deep.equal({ ...initialState, bar: "23" });
+    await effect(testStore, async () => ({ bar: "23" }))();
+    expect(testStore).to.deep.equal({ ...initialState, bar: "23" });
   });
 });
