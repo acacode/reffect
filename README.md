@@ -15,9 +15,9 @@ Reffect — is a declarative and reactive multi-store state manager for JavaScri
   [![npm](https://img.shields.io/npm/v/@reffect/core?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/core) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/core?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/core)
 - [`@reffect/react`](https://github.com/acacode/reffect/tree/master/packages/react) - bindings for [React](https://github.com/facebook/react)  
   [![npm](https://img.shields.io/npm/v/@reffect/react?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/react) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/react?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/react)
-- [`@reffect/logger`](https://github.com/acacode/reffect/tree/master/packages/logger) - store middleware which log each store update  
+- [`@reffect/logger`](https://github.com/acacode/reffect/tree/master/packages/logger) - store middleware to log each store update  
   [![npm](https://img.shields.io/npm/v/@reffect/logger?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/logger) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/logger?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/logger)
-- [`@reffect/localstore`](https://github.com/acacode/reffect/tree/master/packages/localstore) - store middleware which synchronize store with local storage key  
+- [`@reffect/localstore`](https://github.com/acacode/reffect/tree/master/packages/localstore) - store middleware to synchronize store with local storage key  
   [![npm](https://img.shields.io/npm/v/@reffect/localstore?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/localstore) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/localstore?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/localstore)
 
 ## Examples
