@@ -9,12 +9,6 @@ cache:
 install:
   - npm i
 
-jobs:
-  include:
-    - stage: build
-      script:
-        - npm run build
-
 notifications:
   slack:
     rooms:
