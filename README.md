@@ -11,21 +11,76 @@ Reffect — is a declarative and reactive multi-store state manager for JavaScri
 
 ## Packages
 
-&nbsp;&nbsp;&nbsp; —&nbsp; [`@reffect/core`](https://github.com/acacode/reffect/tree/master/packages/core)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Main features (creating stores and effects)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![npm](https://img.shields.io/npm/v/@reffect/core?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/core) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/core?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/core)
+- [`@reffect/core`](https://github.com/acacode/reffect/tree/master/packages/core) - main features (creating stores and effects)  
+  [![npm](https://img.shields.io/npm/v/@reffect/core?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/core) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/core?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/core)
+- [`@reffect/react`](https://github.com/acacode/reffect/tree/master/packages/react) - bindings for [React](https://github.com/facebook/react)  
+  [![npm](https://img.shields.io/npm/v/@reffect/react?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/react) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/react?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/react)
+- [`@reffect/logger`](https://github.com/acacode/reffect/tree/master/packages/logger) - store middleware which log each store update  
+  [![npm](https://img.shields.io/npm/v/@reffect/logger?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/logger) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/logger?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/logger)
+- [`@reffect/localstore`](https://github.com/acacode/reffect/tree/master/packages/localstore) - store middleware which synchronize store with local storage key  
+  [![npm](https://img.shields.io/npm/v/@reffect/localstore?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/localstore) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/localstore?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/localstore)
 
-&nbsp;&nbsp;&nbsp; —&nbsp; [`@reffect/react`](https://github.com/acacode/reffect/tree/master/packages/react)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; React bindings for React  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![npm](https://img.shields.io/npm/v/@reffect/react?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/react) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/react?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/react)
+## Examples
 
-&nbsp;&nbsp;&nbsp; —&nbsp; [`@reffect/logger`](https://github.com/acacode/reffect/tree/master/packages/logger)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Store middleware which log each store update  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![npm](https://img.shields.io/npm/v/@reffect/logger?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/logger) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/logger?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/logger)
+Simple counter
 
-&nbsp;&nbsp;&nbsp; —&nbsp; [`@reffect/localstore`](https://github.com/acacode/reffect/tree/master/packages/localstore)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Store middleware which synchronize store with local storage key  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![npm](https://img.shields.io/npm/v/@reffect/localstore?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/localstore) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/localstore?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/localstore)
+```ts
+import { store, effect, manage } from "@reffect/core";
+
+const counter = store({ value: 0 });
+
+const plus = effect(counter, (num: number) => ({ value: counter.value + num }));
+const plus10 = effect(counter, () => plus(10));
+
+const unsubscribe = manage(counter).subscribe((update, prevState, currState) =>
+  console.log(update, prevState, currState),
+);
+
+plus(10);
+plus10();
+
+console.log(counter.value); // 20
+```
+
+Async effects
+
+```ts
+import { store, effect, manage } from "@reffect/core";
+import { logger } from "@reffect/logger";
+
+export const usersStore = store("users-store", { list: [] }, [logger]);
+
+export const getUsers = effect(usersStore, async () => {
+  const allUsers = await api.getAllUsers();
+
+  return {
+    list: allUsers,
+  };
+});
+
+getUsers(); // Promise<void>
+```
+
+React usage
+
+```tsx
+import React from "react";
+import { usersStore, getUsers } from "./above-example.ts";
+import { useStore, useEffectState } from "@reffect/react";
+
+export const UsersList = () => {
+  const users = useStore(usersStore);
+  const { loading, done, error } = useEffectState(getUsers);
+
+  return (
+    <ul>
+      {!loading && done && users.list.map(user => <li>{user.name}</li>)}
+      {loading && "Loading..."}
+      {error && "Error!"}
+    </ul>
+  );
+};
+```
 
 ## How it works
 

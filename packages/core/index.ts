@@ -1,5 +1,4 @@
 const reffectKey = Symbol("reffect_key");
-const defaultStoreName = "unknown-store";
 
 export type Action<A extends unknown[], R> = (...a: A) => R;
 export type StoreSubscriber<Store> = (partialUpdate: Partial<Store>, previousState: Store, currentState: Store) => void;
@@ -72,7 +71,7 @@ export function store<Store extends object>(param1?: any, param2?: any, middlewa
 
   const storeManager: StoreManager<Store> = {
     initialState: copy(initialState || {}),
-    name: storeName || defaultStoreName,
+    name: storeName || "unknown",
     storeId: Symbol("store_id"),
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {
