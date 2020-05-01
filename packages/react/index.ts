@@ -8,13 +8,7 @@ const reducer = (state: any, newState: any) => ({ ...newState });
 export const useStore = <Store extends object>(store: Store): Store => {
   const [state, setState] = useReducer(reducer, store);
 
-  useIsomorphicEffect(() => {
-    const subscriber = () => setState(store);
-    const { subscribe, unsubscribe } = getManager(store);
-
-    subscribe(subscriber);
-    return () => unsubscribe(subscriber);
-  }, []);
+  useIsomorphicEffect(() => getManager(store).subscribe(() => setState(store)), []);
 
   return state;
 };
@@ -22,13 +16,7 @@ export const useStore = <Store extends object>(store: Store): Store => {
 export const useEffectState = (effect: Action<unknown[], unknown>) => {
   const [state, setState] = useState<EffectState | null>(null);
 
-  useIsomorphicEffect(() => {
-    const subscriber = (state: EffectState) => setState(state);
-    const { subscribe, unsubscribe } = getManager(effect);
-
-    subscribe(subscriber);
-    return () => unsubscribe(subscriber);
-  }, []);
+  useIsomorphicEffect(() => getManager(effect).subscribe(state => setState(state)), []);
 
   return {
     pending: state === EffectState.Pending,

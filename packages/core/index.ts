@@ -2,19 +2,18 @@ const reffectKey = Symbol("reffect_key");
 const defaultStoreName = "unknown-store";
 
 export type Action<A extends unknown[], R> = (...a: A) => R;
-export type Subscriber<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
+export type StoreSubscriber<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
+export type EffectSubscriber = (state: EffectState) => void;
 export type StoreManager<Store> = {
   name: string;
   initialState: Partial<Store>;
   partialUpdate: (store: Partial<Store>) => void;
   storeId: Symbol;
-  subscribe: (subscriber: Subscriber<Store>) => void;
-  unsubscribe: (subscriber: Subscriber<Store>) => void;
+  subscribe: (subscriber: StoreSubscriber<Store>) => () => void;
 };
 export type EffectManager = {
   state: EffectState | null;
-  subscribe: (subscriber: (state: EffectState) => void) => void;
-  unsubscribe: (subscriber: (state: EffectState) => void) => void;
+  subscribe: (subscriber: EffectSubscriber) => () => void;
 };
 export type Middleware<Store extends object> = (
   storeManager: StoreManager<Store>,
@@ -71,8 +70,7 @@ export function createStore<Store extends object>(
       : Array.isArray(param2)
       ? (middlewares = param2) && [null, param1]
       : [param2, param1];
-
-  const subscribers: Subscriber<Store>[] = [];
+  const { publish, subscribe } = createPubSub<StoreSubscriber<Store>, [Partial<Store>, Store, Store]>();
 
   const storeManager: StoreManager<Store> = {
     initialState: copy(initialState || {}),
@@ -82,14 +80,10 @@ export function createStore<Store extends object>(
       if (storeUpdate) {
         const prevState = copy(store);
         Object.assign(store, copy(storeUpdate));
-        subscribers.forEach(subscriber => subscriber(copy(storeUpdate), prevState, copy(store)));
+        publish(copy(storeUpdate), prevState, copy(store));
       }
     },
-    subscribe: subscriber => subscribers.push(subscriber),
-    unsubscribe: subscriber => {
-      const index = subscribers.indexOf(subscriber);
-      subscribers[index] && subscribers.splice(index, 1);
-    },
+    subscribe,
   };
 
   const store = Object.create({
@@ -169,26 +163,22 @@ export function effect<
 
 export function effect<Store extends object>(store: Store, param: any = null): any {
   const { partialUpdate } = getManager(store);
-  const subscribers: ((state: EffectState) => void)[] = [];
+  const { publish, subscribe } = createPubSub<EffectSubscriber, [EffectState]>();
+
   const effectManager: EffectManager = {
     state: null,
-    subscribe: (subscriber: (state: EffectState) => void) => {
-      subscribers.push(subscriber);
-    },
-    unsubscribe: (subscriber: (state: EffectState) => void) => {
-      const index = subscribers.indexOf(subscriber);
-      subscribers[index] && subscribers.splice(index, 1);
-    },
+    subscribe,
   };
 
   const updateActionState = (state: EffectState) => {
     effectManager.state = state;
-    subscribers.forEach(subscriber => subscriber(state));
+    publish(state);
   };
 
   const action = <A extends UnknownArgs>(...args: A): any => {
-    updateActionState(EffectState.Pending);
     let update: any = void 0;
+
+    updateActionState(EffectState.Pending);
 
     // defining what update case it is
     if (args.length === 1 && !param && isObject(args[0])) {
@@ -241,4 +231,21 @@ const copy = (data: object): any => {
     newObject[key] = isObject(data[key]) ? copy(data[key]) : data[key];
   }
   return newObject;
+};
+
+const createPubSub = <Subscriber extends Function, PubArgs extends unknown[]>() => {
+  const subscribers: Subscriber[] = [];
+
+  return {
+    publish: (...args: PubArgs) => {
+      subscribers.forEach(subscriber => subscriber(...args));
+    },
+    subscribe: (subscriber: Subscriber) => {
+      const index = subscribers.push(subscriber) - 1;
+
+      return () => {
+        subscribers.splice(index, 1);
+      };
+    },
+  };
 };
