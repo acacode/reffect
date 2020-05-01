@@ -1,10 +1,12 @@
+import { Action } from "@reffect/core";
+
 declare const useStore: <Store extends object>(store: Store) => Store;
 declare const useEffectState: (
-  effect: (...args: unknown[]) => unknown,
+  effect: Action<unknown[], unknown>,
 ) => {
-  loading: boolean;
-  error: boolean;
-  success: boolean;
+  pending: boolean;
+  fail: boolean;
+  done: boolean;
 };
 
 export { useEffectState, useStore };

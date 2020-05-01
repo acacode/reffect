@@ -25,9 +25,9 @@ declare type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
     : T
   : never;
 declare const enum EffectState {
-  Loading = "loading",
-  Success = "success",
-  Error = "error",
+  Pending = "pending",
+  Done = "done",
+  Fail = "fail",
 }
 declare type UnknownArgs = unknown[] | [];
 declare function getManager<ManagingValue extends object | Action<unknown[], unknown>>(
@@ -109,4 +109,4 @@ declare function effect<
   asyncAction: Action<InputArgs, Promise<StoreUpdate<Store, Update> | void>>,
 ): Action<InputArgs, Promise<void>>;
 
-export { EffectManager, EffectState, Middleware, StoreManager, Subscriber, createStore, effect, getManager };
+export { Action, EffectManager, EffectState, Middleware, StoreManager, Subscriber, createStore, effect, getManager };

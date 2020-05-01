@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useLayoutEffect, useState } from "react";
-import { getManager, EffectState } from "@reffect/core";
+import { getManager, EffectState, Action } from "@reffect/core";
 
 const useIsomorphicEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -19,7 +19,7 @@ export const useStore = <Store extends object>(store: Store): Store => {
   return state;
 };
 
-export const useEffectState = (effect: (...args: unknown[]) => unknown) => {
+export const useEffectState = (effect: Action<unknown[], unknown>) => {
   const [state, setState] = useState<EffectState | null>(null);
 
   useIsomorphicEffect(() => {
@@ -31,8 +31,8 @@ export const useEffectState = (effect: (...args: unknown[]) => unknown) => {
   }, []);
 
   return {
-    loading: state === EffectState.Loading,
-    error: state === EffectState.Error,
-    success: state === EffectState.Success,
+    pending: state === EffectState.Pending,
+    fail: state === EffectState.Fail,
+    done: state === EffectState.Done,
   };
 };

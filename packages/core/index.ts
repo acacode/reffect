@@ -1,7 +1,7 @@
 const reffectKey = Symbol("reffect_key");
 const defaultStoreName = "unknown-store";
 
-type Action<A extends unknown[], R> = (...a: A) => R;
+export type Action<A extends unknown[], R> = (...a: A) => R;
 export type Subscriber<Store> = (partialUpdate: Partial<Store>, prevState: Store, curState: Store) => void;
 export type StoreManager<Store> = {
   name: string;
@@ -29,9 +29,9 @@ type StoreUpdate<Store, T> = Exclude<keyof T, keyof Store> extends never
   : never;
 
 export const enum EffectState {
-  Loading = "loading",
-  Success = "success",
-  Error = "error",
+  Pending = "pending",
+  Done = "done",
+  Fail = "fail",
 }
 
 type UnknownArgs = unknown[] | [];
@@ -187,7 +187,7 @@ export function effect<Store extends object>(store: Store, param: any = null): a
   };
 
   const action = <A extends UnknownArgs>(...args: A): any => {
-    updateActionState(EffectState.Loading);
+    updateActionState(EffectState.Pending);
     let update: any = void 0;
 
     // defining what update case it is
@@ -207,20 +207,20 @@ export function effect<Store extends object>(store: Store, param: any = null): a
       update
         .then(updateData => {
           partialUpdate(updateData);
-          updateActionState(EffectState.Success);
+          updateActionState(EffectState.Done);
         })
         .catch(e => {
-          updateActionState(EffectState.Error);
+          updateActionState(EffectState.Fail);
           throw e;
         });
     } else {
       try {
         partialUpdate(update);
       } catch (e) {
-        updateActionState(EffectState.Error);
+        updateActionState(EffectState.Fail);
         throw e;
       }
-      updateActionState(EffectState.Success);
+      updateActionState(EffectState.Done);
     }
   };
 
