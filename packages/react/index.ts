@@ -1,10 +1,12 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState, useReducer } from "react";
 import { manage, EffectState, Action } from "@reffect/core";
 
 const useIsomorphicEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
+const reducer = (state: any, newState: any) => ({ ...newState });
+
 export const useStore = <Store extends object>(store: Store): Store => {
-  const [state, setState] = useState<Store>(store);
+  const [state, setState] = useReducer(reducer, store);
 
   useIsomorphicEffect(() => manage(store).subscribe(() => setState(store)), []);
 

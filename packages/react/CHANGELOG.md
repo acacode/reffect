@@ -1,3 +1,9 @@
+# 1.1.1
+
+### Fixes:
+
+1. Critical bug linked with getting fresh store value from `useStore(store)`
+
 # 1.1.0
 
 ### Features:
