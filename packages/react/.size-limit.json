@@ -12,6 +12,6 @@
   {
     "path": "reffect-react.umd.js",
     "webpack": false,
-    "limit": "420 B"
+    "limit": "450 B"
   }
 ]
