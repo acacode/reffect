@@ -1,3 +1,9 @@
+# 1.4.1
+
+### Minor:
+
+1. Fix README
+
 # 1.4.0
 
 ### Breaking changes:
