@@ -6,7 +6,7 @@ const allPackagesPeerDepsMap = {
   "@reffect/core": "reffect"
 };
 
-const inputFileName = "index.ts";
+const inputFileName = "src/index.ts";
 // JS object of package.json file
 const packageJson = JSON.parse(fs.readFileSync(paths.packageJson).toString());
 // converts package name to file name (example: "@reffect/logger" -> "reffect-logger")

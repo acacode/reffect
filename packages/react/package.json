@@ -11,7 +11,6 @@
   "readme": "README.md",
   "private": false,
   "sideEffects": false,
-  "source": "index.ts",
   "main": "reffect-react.cjs.js",
   "typings": "reffect-react.d.ts",
   "umd:main": "reffect-react.umd.js",
@@ -30,7 +29,6 @@
   },
   "files": [
     "LICENSE",
-    "index.ts",
     "reffect-react.d.ts",
     "reffect-react.cjs.js",
     "reffect-react.cjs.js.map",
@@ -54,5 +52,5 @@
     "reffect"
   ],
   "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c",
-  "typescript:main": "index.ts"
+  "typescript:main": "src/index.ts"
 }

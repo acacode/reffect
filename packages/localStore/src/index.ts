@@ -1,6 +1,6 @@
-import { StoreManager, StoreSubscriber } from "@reffect/core";
+import { StoreManager, StoreSubscriber, StoreType } from "@reffect/core";
 
-export const localstore = <Store extends object>(storeManager: StoreManager<Store>) => {
+export const localstore = <Store extends StoreType>(storeManager: StoreManager<Store>) => {
   const localStorageKey = `@reffect/store/${storeManager.name}`;
   const localStorageValue = localStorage.getItem(localStorageKey);
   if (localStorageValue !== null) {
