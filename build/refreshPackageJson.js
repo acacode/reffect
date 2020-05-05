@@ -17,7 +17,7 @@ const refreshPackageJson = () => {
     main: buildConfigs.cjs.outputFileName,
     "umd:main": buildConfigs.umd.outputFileName,
     "jsnext:main": buildConfigs.es.outputFileName,
-    "typescript:main": inputFileName,
+    "typescript:main": undefined,
     module: buildConfigs.es.outputFileName,
     /** --------------------------------------------------- */
 
