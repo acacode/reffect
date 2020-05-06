@@ -18,6 +18,6 @@ export function manage<Effect extends EffectManagingType>(
  */
 export function manage<Store extends StoreType>(store: Store): StoreManager<Store>;
 export function manage(value: StoreType | Function) {
-  if (!value || !value[reffectKey]) console.error("received wrong value", value);
+  if (!value || !value[reffectKey]) console.error("received wrong store/effect", value);
   return value[reffectKey];
 }
