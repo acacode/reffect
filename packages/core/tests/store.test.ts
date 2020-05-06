@@ -1,4 +1,4 @@
-import { store, StoreMiddleware } from "..";
+import { store, StoreMiddleware } from "../src";
 import { expect } from "chai";
 
 describe("store()", () => {

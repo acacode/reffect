@@ -1,6 +1,6 @@
 export const isObject = (obj: unknown): obj is object => typeof obj === "object";
 
-export const copy = (data: object): any => {
+export const copy = (data: any): any => {
   if (null == data || !isObject(data)) return data;
   if (data instanceof Date) return new Date(data.getTime());
   if (data instanceof Array) return data.map(copy);
@@ -12,14 +12,11 @@ export const copy = (data: object): any => {
   return newObject;
 };
 
-export const createPubSub = <Subscriber extends Function, PubArgs extends unknown[]>(
-  callback?: (...args: PubArgs) => void,
-) => {
+export const createPubSub = <Subscriber extends (...args: any[]) => void>() => {
   const subscribers: Subscriber[] = [];
 
   return [
-    (...args: PubArgs) => {
-      callback && callback(...args);
+    (...args: Parameters<Subscriber>) => {
       subscribers.forEach(subscriber => subscriber(...args));
     },
     (subscriber: Subscriber) => {

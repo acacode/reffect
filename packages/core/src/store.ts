@@ -76,7 +76,7 @@ export function store<Store extends StoreType>(
       ? (middlewares = param2) && [null, param1]
       : [param2, param1];
 
-  const [publish, subscribe] = createPubSub<StoreSubscriber<Store>, [Partial<Store>, Store, Store]>();
+  const [publish, subscribe] = createPubSub<StoreSubscriber<Store>>();
 
   const storeManager: StoreManager<Store> = {
     initialState: copy(initialState || {}),

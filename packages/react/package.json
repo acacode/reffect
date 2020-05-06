@@ -17,11 +17,11 @@
   "jsnext:main": "reffect-react.es.js",
   "module": "reffect-react.es.js",
   "peerDependencies": {
-    "@reffect/core": "^1.2.0",
+    "@reffect/core": "^1.5.0",
     "react": "^16.13.0"
   },
   "devDependencies": {
-    "@reffect/core": "^1.2.0",
+    "@reffect/core": "^1.5.0",
     "@size-limit/preset-small-lib": "^4.2.1",
     "@types/react": "^16.9.23",
     "react": "^16.13.0",
@@ -51,6 +51,5 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c",
-  "typescript:main": "src/index.ts"
+  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
 }

@@ -1,3 +1,9 @@
+# 1.1.2
+
+### Minor:
+
+1. Support new `@reffect/core` version (`1.5.0`)
+
 # 1.1.1
 
 ### Fixes:

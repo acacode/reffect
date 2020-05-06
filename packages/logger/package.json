@@ -46,6 +46,5 @@
     "hooks",
     "reffect"
   ],
-  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c",
-  "typescript:main": "src/index.ts"
+  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
 }
