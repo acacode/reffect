@@ -1,0 +1,2 @@
+Object.defineProperty(exports,"__esModule",{value:!0});var e=require("@reffect/core");exports.undoable=(t,r=10)=>{const s=e.manage(t),a=[];let n=s.initialState;const o=[];return s.subscribe((e,t,s)=>{r>a.length||a.shift(),a.push(t),n=s}),{undo:()=>{if(a.length){const e=a.pop();e&&(o.push(n),n=e,s.partialUpdate(n))}},redo:()=>{if(o.length){const e=o.shift();e&&(a.push(n),n=e,s.partialUpdate(n))}}}};
+//# sourceMappingURL=reffect-undoable.cjs.js.map

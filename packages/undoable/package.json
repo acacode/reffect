@@ -1,0 +1,50 @@
+{
+  "name": "@reffect/undoable",
+  "version": "0.0.1",
+  "description": "Reffect stores extension",
+  "scripts": {
+    "build": "node ../../build/build.js",
+    "size": "size-limit"
+  },
+  "author": "acacode",
+  "license": "MIT",
+  "readme": "README.md",
+  "private": false,
+  "sideEffects": false,
+  "main": "reffect-undoable.cjs.js",
+  "typings": "reffect-undoable.d.ts",
+  "umd:main": "reffect-undoable.umd.js",
+  "jsnext:main": "reffect-undoable.es.js",
+  "module": "reffect-undoable.es.js",
+  "peerDependencies": { "@reffect/core": "^1.5.0" },
+  "devDependencies": {
+    "@reffect/core": "^1.5.0",
+    "@size-limit/preset-small-lib": "^4.2.1",
+    "size-limit": "^4.2.1"
+  },
+  "files": [
+    "LICENSE",
+    "reffect-undoable.d.ts",
+    "reffect-undoable.cjs.js",
+    "reffect-undoable.cjs.js.map",
+    "reffect-undoable.es.js",
+    "reffect-undoable.es.js.map",
+    "reffect-undoable.umd.js",
+    "reffect-undoable.umd.js.map"
+  ],
+  "keywords": [
+    "redux",
+    "effector",
+    "mobx",
+    "state",
+    "store",
+    "flux",
+    "reactive",
+    "state-manager",
+    "state manager",
+    "react",
+    "hooks",
+    "reffect"
+  ],
+  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
+}
