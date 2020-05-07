@@ -12,20 +12,30 @@ export const undoable = <Store extends StoreType>(store: Store, undoSize: number
   let present: Store = storeManager.initialState as Store;
   const future: Store[] = [];
 
+  let updateFromLib = false;
+
   storeManager.subscribe((partialUpdate, prevState, currState) => {
-    if (past.length >= undoSize) {
-      past.shift();
+    if (updateFromLib) {
+      updateFromLib = false;
+    } else {
+      if (future.length) {
+        future.splice(0, future.length);
+      }
+      if (past.length >= undoSize) {
+        past.shift();
+      }
+      past.push(prevState);
+      present = currState;
     }
-    past.push(prevState);
-    present = currState;
   });
 
   const undo = () => {
     if (past.length) {
       const lastPast = past.pop();
       if (lastPast) {
-        future.push(present);
+        future.unshift(present);
         present = lastPast;
+        updateFromLib = true;
         storeManager.partialUpdate(present);
       }
     }
@@ -37,6 +47,7 @@ export const undoable = <Store extends StoreType>(store: Store, undoSize: number
       if (firstFuture) {
         past.push(present);
         present = firstFuture;
+        updateFromLib = true;
         storeManager.partialUpdate(present);
       }
     }
