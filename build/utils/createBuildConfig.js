@@ -33,6 +33,22 @@ const createBuildConfig = ({
         file: outputPathToFile,
         format: outputFormat,
         sourcemap: sourcemap,
+        plugins: [
+          defaultPlugins &&
+            terser({
+              sourcemap: sourcemap,
+              compress: {
+                pure_getters: true,
+                unsafe: true,
+                unsafe_comps: true,
+                warnings: false,
+                arguments: true,
+                unsafe_Function: true,
+                module: true,
+                passes: 30
+              }
+            })
+        ].filter(Boolean),
         ...commonOutput
       },
       external: id => externalDeps.includes(id),
@@ -53,24 +69,10 @@ const createBuildConfig = ({
             noUnusedLocals: true,
             inlineSourceMap: true,
             inlineSources: true,
-            // sourceMap: false,
+            sourceMap: true,
             strictNullChecks: true,
             suppressImplicitAnyIndexErrors: true,
             exclude: ["node_modules", "**/*.spec.ts", "**/*.test.ts"]
-          }),
-        defaultPlugins &&
-          terser({
-            sourcemap: true,
-            compress: {
-              pure_getters: true,
-              unsafe: true,
-              unsafe_comps: true,
-              warnings: false,
-              arguments: true,
-              unsafe_Function: true,
-              module: true,
-              passes: 30
-            }
           }),
         ...plugins
       ].filter(Boolean)
