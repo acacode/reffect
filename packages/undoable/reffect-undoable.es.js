@@ -1,2 +1,0 @@
-import{manage as t}from"@reffect/core";const e=(e,n=10)=>{const i=t(e),s=[];let o=i.initialState;const l=[];let p=!1;return i.subscribe((t,e,i)=>{p?p=!1:(l.length&&l.splice(0,l.length),n>s.length||s.shift(),s.push(e),o=i)}),{undo:()=>{if(s.length){const t=s.pop();t&&(l.unshift(o),o=t,p=!0,i.partialUpdate(o))}},redo:()=>{if(l.length){const t=l.shift();t&&(s.push(o),o=t,p=!0,i.partialUpdate(o))}}}};export{e as undoable};
-//# sourceMappingURL=reffect-undoable.es.js.map
