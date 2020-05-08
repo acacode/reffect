@@ -24,7 +24,7 @@ Hooks:
 import React from "react";
 import { useStore, useEffectState } from "@reffect/react";
 import { keyboardsStore, selectKeyboard, getAllKeyboards } from "path/to/store";
-// keyboardsStore it is store created via `createStore()`
+// keyboardsStore it is store created via `store()`
 // selectKeyboard it is effect created via `effect()`
 // getAllKeyboards it is async effect created via `effect()`
 

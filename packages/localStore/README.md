@@ -16,8 +16,15 @@ Store middleware for [`Reffect`](https://github.com/acacode/reffect)
 ## How to use
 
 ```ts
-import { createStore } from "@reffect/core";
+import { store, effect } from "@reffect/core";
 import { localstore } from "@reffect/localstore";
 
-const keyboards = createStore({ list: [] }, [localstore]);
+const keyboards = store({ list: [] }, "keyboards-store", [localstore]);
+
+const updateKeyboardsList = effect(keyboards, "list");
+
+updateKeyboardsList([{ foo: "2" }]);
+
+// ...
+// localStorage.getItem("@reffect/store/keyboards-store") -> "{"list":[{"foo":"2"}]}"
 ```
