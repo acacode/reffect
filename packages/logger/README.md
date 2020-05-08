@@ -19,7 +19,7 @@ Store middleware for [`Reffect`](https://github.com/acacode/reffect)
 import { store } from "@reffect/core";
 import { logger } from "@reffect/logger";
 
-const projectsStore = store({ projects: [] }, "keyboards", [logger]);
+const projectsStore = store({ projects: [] }, "projects", [logger]);
 
 // ...
 ```
