@@ -1,6 +1,6 @@
 {
   "name": "@reffect/logger",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "logger middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",
@@ -16,9 +16,9 @@
   "umd:main": "reffect-logger.umd.js",
   "jsnext:main": "reffect-logger.es.js",
   "module": "reffect-logger.es.js",
-  "peerDependencies": { "@reffect/core": "^1.2.0" },
+  "peerDependencies": { "@reffect/core": "^1.5.0" },
   "devDependencies": {
-    "@reffect/core": "^1.2.0",
+    "@reffect/core": "^1.5.0",
     "@size-limit/preset-small-lib": "^4.2.1",
     "size-limit": "^4.2.1"
   },
