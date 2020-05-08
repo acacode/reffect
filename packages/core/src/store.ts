@@ -16,7 +16,8 @@ export type StoreManager<Store extends StoreType> = {
  */
 export type StoreMiddleware<Store extends StoreType> = (
   storeManager: StoreManager<Store>,
-  initialState: Partial<Store>,
+  store: Store,
+  copy: (data: any) => any,
 ) => StoreManager<Store>;
 
 /**
@@ -72,7 +73,7 @@ export function store<Store extends StoreType>(
   const [storeName, initialState] =
     typeof param1 === "string"
       ? [param1, param2]
-      : Array.isArray(param2)
+      : param2 instanceof Array
       ? (middlewares = param2) && [null, param1]
       : [param2, param1];
 
@@ -81,7 +82,7 @@ export function store<Store extends StoreType>(
   const storeManager: StoreManager<Store> = {
     initialState: copy(initialState || {}),
     name: storeName || "unknown",
-    storeId: Symbol("store_id"),
+    storeId: Symbol(),
     // this method do update store
     partialUpdate: (storeUpdate: Partial<Store>) => {
       if (storeUpdate) {
@@ -93,12 +94,12 @@ export function store<Store extends StoreType>(
     subscribe,
   };
 
-  const store = Object.create({
-    [reffectKey]: (middlewares || []).reduce(
-      (storeManager, middleware) => middleware(storeManager, initialState),
-      storeManager,
-    ),
-  });
+  const store = Object.assign(Object.create({ [reffectKey]: null }), storeManager.initialState);
 
-  return Object.assign(store, copy(storeManager.initialState));
+  store.__proto__[reffectKey] = (middlewares || []).reduce(
+    (storeManager, middleware) => middleware(storeManager, store, copy),
+    storeManager,
+  );
+
+  return store;
 }

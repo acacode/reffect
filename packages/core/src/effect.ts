@@ -3,7 +3,13 @@ import { manage, reffectKey } from "./manage";
 import { createPubSub, isObject, copy } from "./utils";
 import { Func, UnknownArgs } from "./extraTypes";
 
-export type EffectState = null | "pending" | "done" | "fail";
+const effectState = {
+  pending: "pending",
+  done: "done",
+  fail: "fail",
+} as const;
+export type EffectState = null | typeof effectState[keyof typeof effectState];
+
 export type EffectManager<Store extends StoreType, EffectArgs extends UnknownArgs = UnknownArgs> = {
   args: EffectArgs;
   state: EffectState;
@@ -90,14 +96,14 @@ export function effect<Store extends StoreType>(store: Store, param: any = null)
   const action = <A extends UnknownArgs>(...args: A): any => {
     let update: any = void 0;
 
-    updateActionState("pending", void 0, args);
+    updateActionState(effectState.pending, void 0, args);
 
     try {
       // defining what update case it is
       if (args.length === 1 && !param && isObject(args[0])) {
         // effect(store)({ param: "value" })
         update = args[0];
-      } else if (args.length === 1 && store.hasOwnProperty(param)) {
+      } else if (args.length === 1 && param in store) {
         // effect(store, "param")("value")
         update = { [param]: args[0] };
       } else {
@@ -106,7 +112,7 @@ export function effect<Store extends StoreType>(store: Store, param: any = null)
         update = param(...args);
       }
     } catch (e) {
-      updateActionState("fail", e);
+      updateActionState(effectState.fail, e);
       throw e;
     }
 
@@ -114,15 +120,15 @@ export function effect<Store extends StoreType>(store: Store, param: any = null)
       return update
         .then(updateData => {
           partialUpdate(updateData);
-          updateActionState("done", updateData);
+          updateActionState(effectState.done, updateData);
         })
         .catch(e => {
-          updateActionState("fail", e);
+          updateActionState(effectState.fail, e);
           throw e;
         });
     } else {
       partialUpdate(update);
-      updateActionState("done", update);
+      updateActionState(effectState.done, update);
     }
   };
 

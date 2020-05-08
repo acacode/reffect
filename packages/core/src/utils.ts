@@ -5,8 +5,8 @@ export const copy = (data: any): any => {
   if (data instanceof Date) return new Date(data.getTime());
   if (data instanceof Array) return data.map(copy);
 
-  var newObject = {};
-  for (var key in data) {
+  const newObject = {};
+  for (const key in data) {
     newObject[key] = isObject(data[key]) ? copy(data[key]) : data[key];
   }
   return newObject;

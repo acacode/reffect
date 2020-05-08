@@ -1,7 +1,7 @@
 import { StoreType, StoreManager } from "./store";
 import { EffectManager, EffectInternal } from "./effect";
 
-export const reffectKey = Symbol("reffect_key");
+export const reffectKey = Symbol();
 
 export type EffectManagingType = Function & EffectInternal<object>;
 
