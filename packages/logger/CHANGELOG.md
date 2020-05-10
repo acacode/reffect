@@ -1,3 +1,9 @@
+# 1.0.6
+
+### Internal:
+
+1. Refactor logger function
+
 # 1.0.5
 
 ### Minor:

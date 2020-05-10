@@ -1,3 +1,14 @@
+# 1.5.0
+
+### Features:
+
+1. Subscriptions on effects via `manage(effect)`. Now subscriber also can watch for return action's value and input arguments.
+
+### Fixes:
+
+1. Fix bug with typings when created async effect is not return `Promise<T>` type (if store have type `object`)
+2. Typings of sync/async effects
+
 # 1.4.1
 
 ### Minor:

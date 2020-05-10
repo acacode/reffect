@@ -12,17 +12,17 @@ const refreshPackageJson = () => {
   updatePackageJson(paths.packageJson, {
     ...packageJson,
     /** --- specific package.json fields for dev. usage --- */
-    source: inputFileName,
+    source: undefined,
     typings: buildConfigs.dts.outputFileName,
     main: buildConfigs.cjs.outputFileName,
     "umd:main": buildConfigs.umd.outputFileName,
     "jsnext:main": buildConfigs.es.outputFileName,
-    "typescript:main": inputFileName,
+    "typescript:main": undefined,
     module: buildConfigs.es.outputFileName,
     /** --------------------------------------------------- */
 
     /** list of files which contains in installed package */
-    files: ["LICENSE", inputFileName, ...allOutputFileNames]
+    files: ["LICENSE", ...allOutputFileNames]
   });
 };
 

@@ -1,3 +1,9 @@
+# 1.0.7
+
+### Minor:
+
+Add check for existing store name
+
 # 1.0.6
 
 ### Minor:

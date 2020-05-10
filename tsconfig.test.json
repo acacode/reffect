@@ -6,15 +6,13 @@
     "module": "CommonJS",
     "target": "esnext",
     "moduleResolution": "node",
-    "strict": false,
-    "noImplicitAny": false,
-    "noImplicitReturns": false,
-    "noImplicitThis": false,
-    "noUnusedLocals": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
     "sourceMap": true,
-    "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true
-  },
-  "include": ["index.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": false
+  }
 }

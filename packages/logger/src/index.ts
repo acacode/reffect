@@ -1,9 +1,11 @@
-import { StoreManager, StoreSubscriber } from "@reffect/core";
+import { StoreSubscriber, StoreType, manage } from "@reffect/core";
 
-export const logger = <Store extends object>(storeManager: StoreManager<Store>) => {
+export const logger = <Store extends StoreType>(store: Store) => {
   if (process.env.NODE_ENV === "development") {
-    const log = (component: string, event: string, additionalOutput: any[] = []) => {
-      const beatifyComponentLabel = Array(14)
+    const storeManager = manage(store);
+
+    const log = (component: string, event: string, additionalOutput: unknown[] = []) => {
+      const beatifyComponentLabel = Array(20)
         .fill(" ")
         .map((char, i) => component[i] || char)
         .join("");
@@ -20,20 +22,20 @@ export const logger = <Store extends object>(storeManager: StoreManager<Store>) 
       console.groupEnd();
     };
 
-    log(`store/${storeManager.name}`, "initialize", ["initial state: ", { ...storeManager.initialState }]);
+    log(`store/${storeManager.name}`, "initialize", ["initial state: ", storeManager.initialState]);
 
-    const subscriber: StoreSubscriber<Store> = (partialUpdate: any, prevState: any, curState: any) => {
+    const subscriber: StoreSubscriber<StoreType> = (partialUpdate, prevState, curState) => {
       log(`store/${storeManager.name}`, "store update", [
         "payload:        ",
         partialUpdate,
         "\r\nprevious state: ",
         prevState,
         "\r\ncurrrent state: ",
-        { ...curState, ...(partialUpdate || {}) },
+        curState,
       ]);
     };
 
     storeManager.subscribe(subscriber);
   }
-  return storeManager;
+  return store;
 };

@@ -7,7 +7,7 @@
   {
     "path": "reffect-logger.cjs.js",
     "webpack": false,
-    "limit": "510 B"
+    "limit": "520 B"
   },
   {
     "path": "reffect-logger.umd.js",

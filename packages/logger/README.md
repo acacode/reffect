@@ -16,8 +16,14 @@ Store middleware for [`Reffect`](https://github.com/acacode/reffect)
 ## How to use
 
 ```ts
-import { createStore } from "@reffect/core";
+import { store } from "@reffect/core";
 import { logger } from "@reffect/logger";
 
-const keyboards = createStore({ list: [] }, [logger]);
+const projectsStore = store({ projects: [] }, "projects", [logger]);
+
+// ...
 ```
+
+## How it looks
+
+![example-image](./assets/logger-example.jpg)
