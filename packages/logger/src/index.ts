@@ -1,9 +1,9 @@
 import { StoreSubscriber, StoreType, manage } from "@reffect/core";
 
 export const logger = <Store extends StoreType>(store: Store) => {
-  const storeManager = manage(store);
-
   if (process.env.NODE_ENV === "development") {
+    const storeManager = manage(store);
+
     const log = (component: string, event: string, additionalOutput: unknown[] = []) => {
       const beatifyComponentLabel = Array(20)
         .fill(" ")
