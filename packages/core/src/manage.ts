@@ -11,7 +11,7 @@ export type EffectManagingType = Function & EffectInternal<object>;
  */
 export function manage<Effect extends EffectManagingType>(
   effect: Effect,
-): EffectManager<Effect["$storeType"], Effect extends (...inputArgs: infer T) => void ? T : never>;
+): EffectManager<Effect["__storeType__"], Effect extends (...inputArgs: infer T) => void ? T : never>;
 /**
  * @param store store ref which created via `store()` function
  * @returns store manager

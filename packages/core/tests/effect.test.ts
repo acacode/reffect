@@ -6,7 +6,7 @@ const { expect } = chai;
 describe("effect()", () => {
   const initialState = { foo: "bar", baz: [1, 2, 3], bar: "bar" };
   const storeName = "store-name";
-  const middlewares: StoreMiddleware<typeof initialState>[] = [storeManager => storeManager];
+  const middlewares: StoreMiddleware<typeof initialState>[] = [store => store];
 
   let testStore: typeof initialState;
 

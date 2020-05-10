@@ -1,10 +1,8 @@
-import { StoreSubscriber, StoreType, StoreManager } from "@reffect/core";
+import { StoreSubscriber, StoreType, manage } from "@reffect/core";
 
-export const localstore = <Store extends StoreType>(
-  storeManager: StoreManager<Store>,
-  store: Store,
-  copy: (obj: object) => object,
-) => {
+export const localstore = <Store extends StoreType>(store: Store, copy: (obj: object) => object) => {
+  const storeManager = manage(store);
+
   if (storeManager.name === "unknown") {
     throw `store should have unique name to use localstore middleware`;
   }
@@ -15,7 +13,6 @@ export const localstore = <Store extends StoreType>(
   if (localStorageValue !== null) {
     const parsed = JSON.parse(localStorageValue);
     storeManager.initialState = copy(parsed);
-    Object.assign(store, parsed);
   }
 
   let localStorageUpdateTimer: any = null;
@@ -30,5 +27,5 @@ export const localstore = <Store extends StoreType>(
 
   storeManager.subscribe(subscriber);
 
-  return storeManager;
+  return store;
 };

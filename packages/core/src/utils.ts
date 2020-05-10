@@ -1,5 +1,8 @@
 export const isObject = (obj: unknown): obj is object => typeof obj === "object";
 
+export const assign = <T1 extends object, T2 extends object>(obj1: T1, obj2: T2): T1 & T2 =>
+  Object.assign(obj1, copy(obj2));
+
 export const copy = (data: any): any => {
   if (null == data || !isObject(data)) return data;
   if (data instanceof Date) return new Date(data.getTime());

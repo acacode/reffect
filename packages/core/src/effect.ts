@@ -10,6 +10,12 @@ const effectState = {
 } as const;
 export type EffectState = null | typeof effectState[keyof typeof effectState];
 
+export type EffectAction<Store extends StoreType, InputArgs extends UnknownArgs, ReturnValue = void> = Func<
+  InputArgs,
+  ReturnValue
+> &
+  EffectInternal<Store>;
+
 export type EffectManager<Store extends StoreType, EffectArgs extends UnknownArgs = UnknownArgs> = {
   args: EffectArgs;
   state: EffectState;
@@ -26,7 +32,7 @@ export type EffectManager<Store extends StoreType, EffectArgs extends UnknownArg
  */
 export type EffectInternal<Store extends StoreType> = {
   /** WARNING! this property is not exist. used only for typings. */
-  $storeType: Store;
+  __storeType__: Store;
 };
 
 /**
@@ -42,7 +48,7 @@ export type EffectInternal<Store extends StoreType> = {
  */
 export function effect<Store extends StoreType, Update extends Partial<Store> = Partial<Store>>(
   store: Store,
-): ((storeUpdate: Update) => void) & EffectInternal<Store>;
+): EffectAction<Store, [Update]>;
 /**
  * **Property effect**
  * Action which update store property
@@ -54,7 +60,7 @@ export function effect<Store extends StoreType, Update extends Partial<Store> = 
 export function effect<Store extends StoreType, StorePropertyName extends keyof Store = keyof Store>(
   store: Store,
   property: StorePropertyName,
-): ((propertyUpdate: Store[StorePropertyName]) => void) & EffectInternal<Store>;
+): EffectAction<Store, [Store[StorePropertyName]]>;
 /**
  * **Standard\Async effect**
  * Synchronous\Asynchronous store update
@@ -70,7 +76,7 @@ export function effect<
 >(
   store: Store,
   action: Func<InputArgs, StoreUpdate>,
-): Func<InputArgs, ReturnType<typeof action> extends Promise<unknown> ? Promise<void> : void> & EffectInternal<Store>;
+): EffectAction<Store, InputArgs, ReturnType<typeof action> extends Promise<unknown> ? Promise<void> : void>;
 export function effect<Store extends StoreType>(store: Store, param: any = null): any {
   const { partialUpdate } = manage(store);
 
@@ -100,16 +106,16 @@ export function effect<Store extends StoreType>(store: Store, param: any = null)
 
     try {
       // defining what update case it is
-      if (args.length === 1 && !param && isObject(args[0])) {
-        // effect(store)({ param: "value" })
-        update = args[0];
-      } else if (args.length === 1 && param in store) {
-        // effect(store, "param")("value")
-        update = { [param]: args[0] };
-      } else {
+      if (typeof param === "function") {
         // effect(store, () => ({ param: "value" }))
         // effect(store, async () => ({ param: "value" }))
         update = param(...args);
+      } else if (param) {
+        // effect(store, "param")("value")
+        update = { [param]: args[0] };
+      } else if (isObject(args[0])) {
+        // effect(store)({ param: "value" })
+        update = args[0];
       }
     } catch (e) {
       updateActionState(effectState.fail, e);

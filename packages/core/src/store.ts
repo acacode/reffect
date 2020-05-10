@@ -1,4 +1,4 @@
-import { createPubSub, copy } from "./utils";
+import { createPubSub, copy, assign } from "./utils";
 import { reffectKey } from "./manage";
 
 export type StoreType = object;
@@ -6,6 +6,7 @@ export type StoreSubscriber<Store> = (partialUpdate: Partial<Store>, previousSta
 export type StoreManager<Store extends StoreType> = {
   name: string;
   initialState: Partial<Store>;
+  state: Store;
   partialUpdate: (store: Partial<Store>) => void;
   storeId: Symbol;
   subscribe: (subscriber: StoreSubscriber<Store>) => () => void;
@@ -14,11 +15,7 @@ export type StoreManager<Store extends StoreType> = {
 /**
  * middleware function type
  */
-export type StoreMiddleware<Store extends StoreType> = (
-  storeManager: StoreManager<Store>,
-  store: Store,
-  copy: (data: any) => any,
-) => StoreManager<Store>;
+export type StoreMiddleware<Store extends StoreType> = (store: Store, copy: (data: object) => object) => Store;
 
 /**
  * Create a store
@@ -79,27 +76,25 @@ export function store<Store extends StoreType>(
 
   const [publish, subscribe] = createPubSub<StoreSubscriber<Store>>();
 
-  const storeManager: StoreManager<Store> = {
-    initialState: copy(initialState || {}),
-    name: storeName || "unknown",
-    storeId: Symbol(),
-    // this method do update store
-    partialUpdate: (storeUpdate: Partial<Store>) => {
-      if (storeUpdate) {
-        const prevState = copy(store);
-        Object.assign(store, copy(storeUpdate));
-        publish(copy(storeUpdate), prevState, copy(store));
-      }
-    },
-    subscribe,
-  };
-
-  const store = Object.assign(Object.create({ [reffectKey]: null }), storeManager.initialState);
-
-  store.__proto__[reffectKey] = (middlewares || []).reduce(
-    (storeManager, middleware) => middleware(storeManager, store, copy),
-    storeManager,
+  const store = assign(
+    Object.create({
+      [reffectKey]: {
+        initialState: copy(initialState || {}),
+        name: storeName || "unknown",
+        storeId: Symbol(),
+        // this method do update store
+        partialUpdate: (storeUpdate: Partial<Store>) => {
+          if (storeUpdate) {
+            const prevState = copy(store);
+            assign(store, storeUpdate);
+            publish(copy(storeUpdate), prevState, copy(store));
+          }
+        },
+        subscribe,
+      },
+    }),
+    initialState,
   );
 
-  return store;
+  return (middlewares || []).reduce<Store>((store, middleware) => middleware(store, copy) as Store, store);
 }

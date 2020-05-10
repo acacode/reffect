@@ -1,20 +1,25 @@
-import { store, manage, StoreManager, StoreMiddleware, effect, EffectManager, EffectState, StoreType } from "../src";
+import {
+  store,
+  manage,
+  StoreManager,
+  StoreMiddleware,
+  effect,
+  EffectManager,
+  EffectState,
+  StoreType,
+  EffectAction,
+} from "../src";
 import * as chai from "chai";
 import * as spies from "chai-spies";
 chai.use(spies);
 
 const { spy, expect } = chai;
 
-const delay = (delay: number = 1000) =>
-  new Promise(resolve => {
-    setTimeout(() => resolve(), delay);
-  });
-
 describe("manage()", () => {
   describe("stores", () => {
     const initialState = { foo: "bar", baz: [1, 2, 3], bar: "bar" };
     const storeName = "store-name";
-    const middlewares: StoreMiddleware<typeof initialState>[] = [storeManager => storeManager];
+    const middlewares: StoreMiddleware<typeof initialState>[] = [store => store];
 
     let testStore: typeof initialState;
     let testStoreManager: StoreManager<object>;
@@ -73,15 +78,15 @@ describe("manage()", () => {
 
   describe("effects", () => {
     let testStore: StoreType;
-    let testEffect: (foo?: string) => void;
+    let testEffect: EffectAction<typeof testStore, [string?]>;
     let testEffectManager: EffectManager<object, [(string | undefined)?]>;
-    let spyFunc: () => void;
+    // let spyFunc: () => void;
 
     beforeEach(() => {
       testStore = store({ foo: "bar " });
       testEffect = effect(testStore, (foo?: string) => ({ foo }));
       testEffectManager = manage(testEffect);
-      spyFunc = spy();
+      // spyFunc = spy();
     });
 
     it(`should have state`, () => {

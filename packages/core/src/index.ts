@@ -1,4 +1,4 @@
-export { effect, EffectState, EffectManager } from "./effect";
+export { effect, EffectState, EffectAction, EffectManager } from "./effect";
 
 export { store, StoreType, StoreSubscriber, StoreManager, StoreMiddleware } from "./store";
 

@@ -1,6 +1,8 @@
-import { StoreSubscriber, StoreType, StoreManager } from "@reffect/core";
+import { StoreSubscriber, StoreType, manage } from "@reffect/core";
 
-export const logger = <Store extends StoreType>(storeManager: StoreManager<Store>) => {
+export const logger = <Store extends StoreType>(store: Store) => {
+  const storeManager = manage(store);
+
   if (process.env.NODE_ENV === "development") {
     const log = (component: string, event: string, additionalOutput: unknown[] = []) => {
       const beatifyComponentLabel = Array(20)
@@ -35,5 +37,5 @@ export const logger = <Store extends StoreType>(storeManager: StoreManager<Store
 
     storeManager.subscribe(subscriber);
   }
-  return storeManager;
+  return store;
 };
