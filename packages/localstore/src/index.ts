@@ -13,6 +13,7 @@ export const localstore = <Store extends StoreType>(store: Store, copy: (obj: ob
   if (localStorageValue !== null) {
     const parsed = JSON.parse(localStorageValue);
     storeManager.initialState = copy(parsed);
+    Object.assign(store, copy(parsed));
   }
 
   let localStorageUpdateTimer: any = null;
