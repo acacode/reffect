@@ -1,3 +1,9 @@
+# 1.0.8
+
+### Fix:
+
+Updating store after initialize store
+
 # 1.0.7
 
 ### Minor:

@@ -1,7 +1,7 @@
 {
   "name": "@reffect/localstore",
-  "version": "1.0.7",
-  "description": "localstore middleware for Reffect",
+  "version": "1.0.8",
+  "description": "localStorage middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",
     "size": "size-limit"
