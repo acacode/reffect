@@ -42,8 +42,8 @@
     "reactive",
     "state-manager",
     "state manager",
-    "react",
-    "hooks",
+    "undo",
+    "undoable",
     "reffect"
   ],
   "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
