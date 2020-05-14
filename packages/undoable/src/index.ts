@@ -15,7 +15,7 @@ export type StoreHistory<Store extends StoreType> = {
 export const undoable = <Store extends StoreType>(
   storeRef: Store,
   middlewares?: StoreMiddleware<StoreHistory<Store>>[],
-  size = 15,
+  limit = 15,
 ): Undoable<Store> => {
   let updateFromUndoable = false;
   const storeRefManager = manage(storeRef);
@@ -55,7 +55,7 @@ export const undoable = <Store extends StoreType>(
       manage(storeHistory).partialUpdate({
         present: currState,
         future: storeHistory.future.length ? [] : storeHistory.future,
-        past: [...storeHistory.past.slice(+(pastLength >= size), pastLength), prevState],
+        past: [...storeHistory.past.slice(+(pastLength >= limit), pastLength), prevState],
       });
     }
   });
