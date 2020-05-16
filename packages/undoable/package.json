@@ -16,7 +16,9 @@
   "umd:main": "reffect-undoable.umd.js",
   "jsnext:main": "reffect-undoable.es.js",
   "module": "reffect-undoable.es.js",
-  "peerDependencies": { "@reffect/core": "^1.5.0" },
+  "peerDependencies": {
+    "@reffect/core": "^1.5.0"
+  },
   "devDependencies": {
     "@reffect/core": "^1.5.0",
     "@size-limit/preset-small-lib": "^4.2.1",
@@ -46,5 +48,5 @@
     "undoable",
     "reffect"
   ],
-  "gitHead": "7636d0e5d6b6ba2f17c0b415f0761b559ae2a20c"
+  "gitHead": "50482f77c77d702e1915035e04c9dd96a68885db"
 }

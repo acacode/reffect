@@ -16,7 +16,9 @@
   "umd:main": "reffect-strict.umd.js",
   "jsnext:main": "reffect-strict.es.js",
   "module": "reffect-strict.es.js",
-  "peerDependencies": { "@reffect/core": "^1.5.0" },
+  "peerDependencies": {
+    "@reffect/core": "^1.5.0"
+  },
   "devDependencies": {
     "@reffect/core": "^1.5.0",
     "@size-limit/preset-small-lib": "^4.2.1",
@@ -44,5 +46,5 @@
     "state manager",
     "reffect"
   ],
-  "gitHead": "a724ce9d6d802cf83fec609ad4664172a4694471"
+  "gitHead": "50482f77c77d702e1915035e04c9dd96a68885db"
 }
