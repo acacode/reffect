@@ -1,3 +1,9 @@
+# 1.1.3
+
+### Fix:
+
+1. update hooks states only if hook is mounted
+
 # 1.1.2
 
 ### Minor:
