@@ -1,0 +1,48 @@
+{
+  "name": "@reffect/strict",
+  "version": "1.0.6",
+  "description": "strict update store middleware for Reffect",
+  "scripts": {
+    "build": "node ../../build/build.js",
+    "size": "size-limit"
+  },
+  "author": "acacode",
+  "license": "MIT",
+  "readme": "README.md",
+  "private": false,
+  "sideEffects": false,
+  "main": "reffect-strict.cjs.js",
+  "typings": "reffect-strict.d.ts",
+  "umd:main": "reffect-strict.umd.js",
+  "jsnext:main": "reffect-strict.es.js",
+  "module": "reffect-strict.es.js",
+  "peerDependencies": { "@reffect/core": "^1.5.0" },
+  "devDependencies": {
+    "@reffect/core": "^1.5.0",
+    "@size-limit/preset-small-lib": "^4.2.1",
+    "size-limit": "^4.2.1"
+  },
+  "files": [
+    "LICENSE",
+    "reffect-strict.d.ts",
+    "reffect-strict.cjs.js",
+    "reffect-strict.cjs.js.map",
+    "reffect-strict.es.js",
+    "reffect-strict.es.js.map",
+    "reffect-strict.umd.js",
+    "reffect-strict.umd.js.map"
+  ],
+  "keywords": [
+    "redux",
+    "effector",
+    "mobx",
+    "state",
+    "store",
+    "flux",
+    "reactive",
+    "state-manager",
+    "state manager",
+    "reffect"
+  ],
+  "gitHead": "a724ce9d6d802cf83fec609ad4664172a4694471"
+}

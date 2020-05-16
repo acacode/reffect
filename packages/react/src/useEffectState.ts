@@ -5,7 +5,14 @@ import { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 export const useEffectState = <Effect extends EffectManagingType>(effect: Effect) => {
   const [state, setState] = useState<EffectState>(null);
 
-  useIsomorphicLayoutEffect(() => manage(effect).subscribe(state => setState(state)), []);
+  useIsomorphicLayoutEffect(() => {
+    let isMount = true;
+    const unsubscribe = manage(effect).subscribe(state => isMount && setState(state));
+    return () => {
+      isMount = false;
+      unsubscribe();
+    };
+  }, []);
 
   return {
     pending: state === "pending",
