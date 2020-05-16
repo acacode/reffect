@@ -1,6 +1,6 @@
 {
   "name": "@reffect/strict",
-  "version": "1.0.6",
+  "version": "0.0.1",
   "description": "strict update store middleware for Reffect",
   "scripts": {
     "build": "node ../../build/build.js",
