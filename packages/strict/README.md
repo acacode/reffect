@@ -1,8 +1,8 @@
 <div align="center">
 
 [![reffect logo](https://raw.githubusercontent.com/acacode/reffect/master/assets/reffect.png)](https://github.com/acacode/reffect)  
-[![npm](https://img.shields.io/npm/v/@reffect/logger?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/logger)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/logger?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/logger)
+[![npm](https://img.shields.io/npm/v/@reffect/strict?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/strict)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/strict?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/strict)
 [![license](https://img.shields.io/github/license/acacode/reffect?style=flat-square&color=blue)](https://github.com/acacode/reffect)
 
 <div align="left">
