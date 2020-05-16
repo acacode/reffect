@@ -1,0 +1,17 @@
+[
+  {
+    "path": "reffect-strict.es.js",
+    "webpack": false,
+    "limit": "310 B"
+  },
+  {
+    "path": "reffect-strict.cjs.js",
+    "webpack": false,
+    "limit": "340 B"
+  },
+  {
+    "path": "reffect-strict.umd.js",
+    "webpack": false,
+    "limit": "450 B"
+  }
+]

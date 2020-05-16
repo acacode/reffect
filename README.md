@@ -19,6 +19,26 @@ Reffect — is a declarative and reactive multi-store state manager for JavaScri
   [![npm](https://img.shields.io/npm/v/@reffect/logger?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/logger) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/logger?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/logger)
 - [`@reffect/localstore`](https://github.com/acacode/reffect/tree/master/packages/localstore) - store middleware to synchronize store with local storage key  
   [![npm](https://img.shields.io/npm/v/@reffect/localstore?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/localstore) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/localstore?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/localstore)
+- [`@reffect/undoable`](https://github.com/acacode/reffect/tree/master/packages/undoable) - store extension which provides undo/redo effects and store history  
+  [![npm](https://img.shields.io/npm/v/@reffect/undoable?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/undoable) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/undoable?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/undoable)
+- [`@reffect/strict`](https://github.com/acacode/reffect/tree/master/packages/strict) - store middleware for making store updates more strict  
+  [![npm](https://img.shields.io/npm/v/@reffect/strict?style=flat-square&color=blue)](https://www.npmjs.com/package/@reffect/strict) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@reffect/strict?style=flat-square&color=blue)](https://bundlephobia.com/result?p=@reffect/strict)
+
+## Install
+
+Before at all you need to install main package:
+
+```bash
+$ npm i -S @reffect/core
+# or using yarn
+$ yarn install @reffect/core
+```
+
+If project is using [React](https://github.com/facebook/react) you need to install [@reffect/react](https://github.com/acacode/reffect/tree/master/packages/react) (pack of React hooks which simplify usage with React application)
+
+```bash
+$ npm i -S @reffect/react
+```
 
 ## Examples
 
