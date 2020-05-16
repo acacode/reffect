@@ -9,21 +9,21 @@
 
 Reffect — is a declarative and reactive multi-store state manager for JavaScript/TypeScript applications inspired by [Reatom](https://github.com/artalar/reatom) and [Effector](https://github.com/zerobias/effector)
 
-# @reffect/logger
+# @reffect/strict
 
 Store middleware for [`Reffect`](https://github.com/acacode/reffect)
 
 ## How to use
 
 ```ts
-import { store } from "@reffect/core";
-import { logger } from "@reffect/logger";
+import { store, effect } from "@reffect/core";
+import { strictUpdate } from "@reffect/logger";
 
-const projectsStore = store({ projects: [] }, "projects", [logger]);
+const projectsStore = store({ projects: [] }, "projects", [strictUpdate]);
 
+const setProjects = effect(projectsStore, "projects");
 // ...
+
+setProjects(["foo", "bar"]); // state of projectsStore will update to { projects: ["foo", "bar"] }
+setProjects(["foo", "bar"]); // state of projectsStore won't update because new state and current are equals
 ```
-
-## How it looks
-
-![example-image](./assets/logger-example.jpg)
