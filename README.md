@@ -26,7 +26,7 @@ Reffect — is a declarative and reactive multi-store state manager for JavaScri
 
 ## Install
 
-Before at all you need to install main package:
+Before at all you need to install the main package:
 
 ```bash
 $ npm i -S @reffect/core
@@ -34,7 +34,7 @@ $ npm i -S @reffect/core
 $ yarn install @reffect/core
 ```
 
-If project is using [React](https://github.com/facebook/react) you need to install [@reffect/react](https://github.com/acacode/reffect/tree/master/packages/react) (pack of React hooks which simplify usage with React application)
+If a project is using [React](https://github.com/facebook/react) you need to install [@reffect/react](https://github.com/acacode/reffect/tree/master/packages/react) (pack of React hooks which simplify usage with React application)
 
 ```bash
 $ npm i -S @reffect/react

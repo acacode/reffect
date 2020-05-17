@@ -12,7 +12,7 @@ Reffect — is a declarative and reactive multi-store state manager for JavaScri
 # @reffect/undoable
 
 Extension for [`Reffect`](https://github.com/acacode/reffect) stores.  
-Provides undo/redo effects and store history.
+It provides undo/redo effects and store history.
 
 ## How to use
 

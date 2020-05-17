@@ -17,9 +17,11 @@ Package which contains main features of [`Reffect`](https://github.com/acacode/r
 
 `Reffect` have stores and effects:
 
-1. Stores - it is simple JavaScript objects whose values are state of store.
-2. Effects - it is functions which creates via `effect(store, effectDeclaration)`.  
-   Effect declaration can be `function`, `property name of store state`, or just `void`.
+1. Store - it is a simple JavaScript object which needed to store data in your application.  
+   The value of the created store is its state.
+2. Effect - it is a function which needed to update the store.  
+   Effects are created via `effect(store, effectDeclaration?)`  
+   Effect declaration can be `function`, `property name of store state`.
 
 Also `Reffect` have export `manage(store)` which gives extra internal features for additional packages(like subscribe on store changes, partial update)
 
