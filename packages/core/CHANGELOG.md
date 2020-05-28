@@ -1,3 +1,9 @@
+# 1.5.1
+
+### Fixes:
+
+1. Deep copying effect arguments
+
 # 1.5.0
 
 ### Features:

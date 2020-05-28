@@ -88,7 +88,7 @@ export function effect<Store extends StoreType>(store: Store, param: any = null)
     effectManager.state = state;
     effectManager.value = value instanceof Error ? value : copy(value);
     if (args) {
-      effectManager.args = copy(args);
+      effectManager.args = args;
     }
   });
 
