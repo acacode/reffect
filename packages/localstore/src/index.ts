@@ -1,32 +1,30 @@
-import { StoreSubscriber, StoreType, manage } from "@reffect/core";
+import { StoreSubscriber, StateType, Store } from "@reffect/core";
 
-export const localstore = <Store extends StoreType>(store: Store, copy: (obj: object) => object) => {
-  const storeManager = manage(store);
-
-  if (storeManager.name === "unknown") {
+export const localstore = <State extends StateType>(store: Store<State>) => {
+  if (store.name === "unknown") {
     throw `store should have unique name to use localstore middleware`;
   }
 
-  const localStorageKey = `@reffect/store/${storeManager.name}`;
+  const localStorageKey = `@reffect/store/${store.name}`;
   const localStorageValue = localStorage.getItem(localStorageKey);
 
   if (localStorageValue !== null) {
     const parsed = JSON.parse(localStorageValue);
-    storeManager.initialState = copy(parsed);
-    Object.assign(store, copy(parsed));
+    store.replace(parsed);
   }
 
   let localStorageUpdateTimer: any = null;
 
-  const subscriber: StoreSubscriber<StoreType> = (partialUpdate, prevState, curState) => {
+  const subscriber: StoreSubscriber<State> = nextState => {
     clearTimeout(localStorageUpdateTimer);
 
+    // TODO: find way to configure this
     localStorageUpdateTimer = setTimeout(() => {
-      localStorage.setItem(localStorageKey, JSON.stringify({ ...curState }));
+      localStorage.setItem(localStorageKey, JSON.stringify(nextState));
     }, 144);
   };
 
-  storeManager.subscribe(subscriber);
+  store.subscribe(subscriber);
 
   return store;
 };

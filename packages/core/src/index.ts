@@ -1,5 +1,5 @@
-export { effect, EffectState, EffectAction, EffectManager } from "./effect";
+export { effect, EffectState, EffectAction } from "./effect";
 
-export { store, StoreType, StoreSubscriber, StoreManager, StoreMiddleware } from "./store";
+export { createStore as store, StateType, StoreSubscriber, Store, StoreModifier } from "./store";
 
-export { manage, EffectManagingType } from "./manage";
+export { shallowCopy } from "./utils";

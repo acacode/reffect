@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { manage, EffectManagingType, EffectState } from "@reffect/core";
+import { EffectState, StateType, EffectAction } from "@reffect/core";
 import { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 
-export const useEffectState = <Effect extends EffectManagingType>(effect: Effect) => {
-  const [state, setState] = useState<EffectState>(null);
+export const useEffectState = <State extends StateType>(effect: EffectAction<State, any>) => {
+  const [state, setState] = useState<EffectState | null>(null);
 
   useIsomorphicLayoutEffect(() => {
     let isMount = true;
-    const unsubscribe = manage(effect).subscribe(state => isMount && setState(state));
+    const unsubscribe = effect.subscribe(state => isMount && setState(state));
     return () => {
       isMount = false;
       unsubscribe();
@@ -15,8 +15,8 @@ export const useEffectState = <Effect extends EffectManagingType>(effect: Effect
   }, []);
 
   return {
-    pending: state === "pending",
-    fail: state === "fail",
-    done: state === "done",
+    pending: state === EffectState.Pending,
+    fail: state === EffectState.Fail,
+    done: state === EffectState.Done,
   };
 };

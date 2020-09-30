@@ -1,64 +1,88 @@
-import { store, StoreMiddleware, StoreType, manage } from "../src";
+import { store, StoreModifier, StateType } from "../src";
 import * as chai from "chai";
 import * as spies from "chai-spies";
+import { Store, StoreConfiguration } from "../src/store";
 chai.use(spies);
 
 const { spy, expect } = chai;
 
 describe("store()", () => {
   const initialState = { foo: "bar", baz: [1, 2, 3], bar: "bar" };
+  type State = typeof initialState;
   const storeName = "store-name";
-  const middlewares: StoreMiddleware<typeof initialState>[] = [];
+  const modifiers: StoreModifier<typeof initialState>[] = [];
 
-  const initializeCases = [
-    ["only initial state", [initialState]],
-    ["initial state + store name", [initialState, storeName]],
-    ["store name + initial state", [storeName, initialState]],
-    ["store name + initial state + middlewares", [storeName, initialState, middlewares]],
-    ["initial state + store name + middlewares", [initialState, storeName, middlewares]],
-  ] as const;
+  const initializeCases: { caseName: string; configuration: StoreConfiguration<State> }[] = [
+    {
+      caseName: "with initial state",
+      configuration: { initialState },
+    },
+    {
+      caseName: "with initial state and store name",
+      configuration: { initialState, name: storeName },
+    },
+    {
+      caseName: "with store name and initial state and modifiers",
+      configuration: { name: storeName, initialState, modifiers },
+    },
+  ];
 
-  initializeCases.forEach(([caseName, inputArgs]) => {
+  initializeCases.forEach(({ caseName, configuration }) => {
     describe(caseName, () => {
-      let testStore: object;
+      let testStore: Store<object>;
 
       beforeEach(() => {
-        testStore = store(...(inputArgs as any));
+        testStore = store(configuration) as Store<object>;
       });
 
       it("return value should be equal to initial state", () => {
-        expect(testStore).to.deep.equal(initialState);
+        expect(testStore.state).to.deep.equal(initialState);
       });
     });
   });
 
-  describe("middlewares", () => {
+  describe("modifiers", () => {
     it("should call middleware when create a store", () => {
       const middlewareSpy = spy();
-      const middleware = <Store extends StoreType>(store: Store) => {
+      const middleware = <State extends StateType>(store: State) => {
         middlewareSpy();
         return store;
       };
-      store({ foo: "bar", bar: "baz" }, storeName, [middleware]);
+      store({
+        initialState: { foo: "bar", bar: "baz" },
+        name: storeName,
+        modifiers: [middleware],
+      });
       expect(middlewareSpy).to.been.called.once;
     });
     it("should be able to mutate store manager", () => {
-      const middleware = <Store extends StoreType>(store: Store) => {
-        const manager = manage(store);
-        manager.partialUpdate = () => ({});
+      const middleware = <State extends StateType>(store: Store<State>) => {
+        store.set = () => {};
         return store;
       };
-      const testStore = store({ foo: "bar", bar: "baz" }, storeName, [middleware]);
-      manage(testStore).partialUpdate({ foo: "baz" });
-      expect(testStore).to.deep.equal({ foo: "bar", bar: "baz" });
+      const testStore = store({
+        initialState: { foo: "bar", bar: "baz" },
+        name: storeName,
+        modifiers: [middleware],
+      });
+      testStore.set({ bar: "bad", foo: "baz" });
+      expect(testStore.state).to.deep.equal({ foo: "bar", bar: "baz" });
     });
     it("should be able to store state", () => {
-      const middleware = <Store extends StoreType>(store: Store) => ({
-        ...store,
-        newProp: "value",
+      const middleware = <State extends Record<string, string>>(store: Store<State>) => {
+        store.set({
+          ...store.state,
+          newProp: "value",
+        });
+
+        return store;
+      };
+      const testStore = store({
+        initialState: { foo: "bar", bar: "baz" },
+        name: storeName,
+        modifiers: [middleware],
       });
-      const testStore = store({ foo: "bar", bar: "baz" }, storeName, [middleware]);
-      expect(testStore).to.deep.equal({ foo: "bar", bar: "baz", newProp: "value" });
+      expect(testStore.state).to.deep.equal({ foo: "bar", bar: "baz", newProp: "value" });
     });
   });
 });

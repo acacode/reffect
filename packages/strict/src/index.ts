@@ -1,7 +1,8 @@
-import { StoreType, manage } from "@reffect/core";
+import { StateType, Store } from "@reffect/core";
 
-const equals = (obj1: object, obj2: object): obj1 is typeof obj2 => {
+const equals = (obj1: unknown, obj2: unknown): obj1 is typeof obj2 => {
   if (obj1 === obj2) return true;
+  if (Array.isArray(obj1) || Array.isArray(obj2)) return false;
   if (!(obj1 instanceof Object) || !(obj2 instanceof Object)) return false;
   if (obj1.constructor !== obj2.constructor) return false;
 
@@ -16,14 +17,14 @@ const equals = (obj1: object, obj2: object): obj1 is typeof obj2 => {
   return true;
 };
 
-export const strictUpdate = <Store extends StoreType>(store: Store, copy: (obj: object) => object) => {
-  const storeManager = manage(store);
-  const originalPartialUpdate = storeManager.partialUpdate;
+export const strictUpdate = <State extends StateType>(store: Store<State>) => {
+  const originalPartialUpdate = store.set;
 
-  storeManager.partialUpdate = (storeUpdate: Partial<Store>) =>
-    storeUpdate &&
-    !equals(store, copy({ ...storeManager.state, ...storeUpdate })) &&
-    originalPartialUpdate(storeUpdate);
+  store.set = (nextState: State | void) => {
+    if (nextState && !equals(store, nextState)) {
+      originalPartialUpdate(nextState);
+    }
+  };
 
   return store;
 };

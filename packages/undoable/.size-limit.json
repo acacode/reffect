@@ -2,16 +2,16 @@
   {
     "path": "reffect-undoable.es.js",
     "webpack": false,
-    "limit": "410 B"
+    "limit": "450 B"
   },
   {
     "path": "reffect-undoable.cjs.js",
     "webpack": false,
-    "limit": "450 B"
+    "limit": "490 B"
   },
   {
     "path": "reffect-undoable.umd.js",
     "webpack": false,
-    "limit": "550 B"
+    "limit": "590 B"
   }
 ]

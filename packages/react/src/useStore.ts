@@ -1,15 +1,15 @@
-import { useReducer } from "react";
-import { manage, StoreType } from "@reffect/core";
+import { useReducer, Reducer } from "react";
+import { StateType, Store } from "@reffect/core";
 import { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect";
 
-const reducer = (state: any, newState: any) => ({ ...newState });
+const reducer = (state: any, newState: any) => newState;
 
-export const useStore = <Store extends StoreType>(store: Store): Store => {
-  const [state, setState] = useReducer(reducer, store);
+export const useStore = <State extends StateType>(store: Store<State>): State => {
+  const [state, setState] = useReducer<Reducer<State, State>>(reducer, store.state);
 
   useIsomorphicLayoutEffect(() => {
     let isMount = true;
-    const unsubscribe = manage(store).subscribe(() => isMount && setState(store));
+    const unsubscribe = store.subscribe(() => isMount && setState(store.state));
     return () => {
       isMount = false;
       unsubscribe();

@@ -29,7 +29,12 @@ rollupBuild()
   .then(outputs =>
     Promise.all(outputs)
       .then(result => {
-        console.log("OK", result.length);
+        console.log(
+          "OK, package: ",
+          result[0].output[0].fileName.replace(".d.ts", ""),
+          ", versions count: ",
+          result.length
+        );
       })
       .catch(e => {
         console.error(e);

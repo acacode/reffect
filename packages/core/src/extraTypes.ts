@@ -1,3 +1,3 @@
 export type UnknownArgs = unknown[] | [];
 
-export type Func<Args extends UnknownArgs, ReturnType = void> = (...args: Args) => ReturnType;
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;

@@ -1,100 +1,78 @@
-import { createPubSub, copy, assign } from "./utils";
-import { reffectKey } from "./manage";
+import { UnionToIntersection } from "./extraTypes";
+import { createPubSub, shallowCopy } from "./utils";
 
-export type StoreType = object;
-export type StoreSubscriber<Store> = (partialUpdate: Partial<Store>, previousState: Store, currentState: Store) => void;
-export type StoreManager<Store extends StoreType> = {
+export type StateType = unknown;
+export type StoreSubscriber<State> = (nextState: State, currentState: State) => void;
+export interface Store<State extends StateType> {
   name: string;
-  initialState: Partial<Store>;
-  state: Store;
-  partialUpdate: (store: Partial<Store>) => void;
-  storeId: Symbol;
-  subscribe: (subscriber: StoreSubscriber<Store>) => () => void;
-};
+  readonly initialState: State;
+  readonly state: State;
+  set: (store: State | void) => void;
+  replace: (store: State) => void;
+  subscribe: (subscriber: StoreSubscriber<State>) => () => void;
+  reset: VoidFunction;
+  clone: () => Store<State>;
+}
 
-/**
- * middleware function type
- */
-export type StoreMiddleware<Store extends StoreType> = (store: Store, copy: (data: object) => object) => Store;
+export type ModifiedStore<State extends StateType, Modifier extends StoreModifier<State>> = Store<State> &
+  UnionToIntersection<ReturnType<Modifier>>;
+
+export type StoreModifier<State extends StateType> = <S extends State>(store: Store<S>) => Store<S>;
+
+export interface StoreConfiguration<
+  State extends StateType,
+  Modifier extends StoreModifier<State> = StoreModifier<State>
+> {
+  /** Initial state of the store */
+  initialState: State extends object ? Partial<State> : State;
+  /** Name of the store */
+  name?: string;
+  /** Middlewares */
+  modifiers?: Modifier[];
+}
 
 /**
  * Create a store
  *
- * @param initialState partial store initial state
- * @param middlewares list of middlewares (functions)
- *
  * @example
- * store({ foo: "bar" }, [middleware1, middleware2])
+ * const fruits = store({
+ *  initialState: { apples: [] },
+ *  name: "store-name",
+ *  modifiers: [middleware1, middleware2],
+ * })
+ *
+ * fruits.apples
  */
-export function store<Store extends StoreType>(
-  initialState?: Partial<Store>,
-  middlewares?: StoreMiddleware<Store>[],
-): Store;
-/**
- * Create a store
- *
- * @param storeName name of store
- * @param initialState partial store initial state
- * @param middlewares list of middlewares (functions)
- *
- * @example
- * store("store-name", { foo: "bar" }, [middleware1, middleware2])
- */
-export function store<Store extends StoreType>(
-  storeName?: string,
-  initialState?: Partial<Store>,
-  middlewares?: StoreMiddleware<Store>[],
-): Store;
-/**
- * Create a store
- *
- * @param initialState partial store initial state
- * @param storeName name of store
- * @param middlewares list of middlewares (functions)
- *
- * @example
- * store({ foo: "bar" }, "store-name", [middleware1, middleware2])
- */
-export function store<Store extends StoreType>(
-  initialState?: Partial<Store>,
-  storeName?: string,
-  middlewares?: StoreMiddleware<Store>[],
-): Store;
+export function createStore<State extends StateType, Modifier extends StoreModifier<State> = StoreModifier<State>>({
+  initialState,
+  name,
+  modifiers = [],
+}: StoreConfiguration<State, Modifier>): ModifiedStore<State, Modifier> {
+  const [publish, subscribe] = createPubSub<StoreSubscriber<State>>();
+  let state = shallowCopy(initialState) as State;
 
-export function store<Store extends StoreType>(
-  param1?: any,
-  param2?: any,
-  middlewares?: StoreMiddleware<Store>[],
-): Store {
-  // defining what param is storeName and what is initialState
-  const [storeName, initialState] =
-    typeof param1 === "string"
-      ? [param1, param2]
-      : param2 instanceof Array
-      ? (middlewares = param2) && [null, param1]
-      : [param2, param1];
+  const store: Store<State> = {
+    get initialState() {
+      return shallowCopy(initialState) as State;
+    },
+    name: name || "unknown",
+    get state() {
+      return shallowCopy(state);
+    },
+    // this method do update store
+    set: (nextState: State | void) => {
+      if (nextState) {
+        publish(nextState, store.state);
+        state = nextState;
+      }
+    },
+    replace: (nextState: State) => {
+      state = nextState;
+    },
+    subscribe,
+    reset: () => store.set(store.initialState),
+    clone: () => createStore({ initialState, name, modifiers }),
+  };
 
-  const [publish, subscribe] = createPubSub<StoreSubscriber<Store>>();
-
-  const store = assign(
-    Object.create({
-      [reffectKey]: {
-        initialState: copy(initialState || {}),
-        name: storeName || "unknown",
-        storeId: Symbol(),
-        // this method do update store
-        partialUpdate: (storeUpdate: Partial<Store>) => {
-          if (storeUpdate) {
-            const prevState = copy(store);
-            assign(store, storeUpdate);
-            publish(copy(storeUpdate), prevState, copy(store));
-          }
-        },
-        subscribe,
-      },
-    }),
-    initialState,
-  );
-
-  return (middlewares || []).reduce<Store>((store, middleware) => middleware(store, copy) as Store, store);
+  return (modifiers || []).reduce((store, modifier) => modifier<State>(store), store) as ModifiedStore<State, Modifier>;
 }

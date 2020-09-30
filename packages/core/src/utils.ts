@@ -1,18 +1,9 @@
-export const isObject = (obj: unknown): obj is object => typeof obj === "object";
+export const shallowCopy = <V extends unknown>(value: V): V => {
+  if (!value || typeof value !== "object" || value instanceof Function) return value;
+  if (value instanceof Date) return new Date(value.getTime()) as V;
+  if (Array.isArray(value)) return [...value] as V;
 
-export const assign = <T1 extends object, T2 extends object>(obj1: T1, obj2: T2): T1 & T2 =>
-  Object.assign(obj1, copy(obj2));
-
-export const copy = (data: any): any => {
-  if (null == data || !isObject(data)) return data;
-  if (data instanceof Date) return new Date(data.getTime());
-  if (data instanceof Array) return data.map(copy);
-
-  const newObject = {};
-  for (const key in data) {
-    newObject[key] = isObject(data[key]) ? copy(data[key]) : data[key];
-  }
-  return newObject;
+  return { ...(value as object) } as V;
 };
 
 export const createPubSub = <Subscriber extends (...args: any[]) => void>() => {

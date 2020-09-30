@@ -27,8 +27,8 @@ Call `undoable` and send to it your store at first argument:
 ```ts
 import { store } from "@reffect/core";
 const storeRef = store({ foo: "bar" });
-const { history, undo, redo } = undoable(storeRef, middlewares, limit);
-// `middlewares` it is array of reffect store middlewares
+const { history, undo, redo } = undoable(storeRef, modifiers, limit);
+// `modifiers` it is array of reffect store modifiers
 // `limit` means limit for state history
 ```
 

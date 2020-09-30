@@ -1,144 +1,106 @@
-import { StoreType } from "./store";
-import { manage, reffectKey } from "./manage";
-import { createPubSub, isObject, copy } from "./utils";
-import { Func, UnknownArgs } from "./extraTypes";
+import { StateType, Store } from "./store";
+import { createPubSub } from "./utils";
 
-const effectState = {
+export const EFFECT_STATE = {
   pending: "pending",
   done: "done",
   fail: "fail",
 } as const;
-export type EffectState = null | typeof effectState[keyof typeof effectState];
 
-export type EffectAction<Store extends StoreType, InputArgs extends UnknownArgs, ReturnValue = void> = Func<
-  InputArgs,
-  ReturnValue
-> &
-  EffectInternal<Store>;
+export const enum EffectState {
+  Pending = "pending",
+  Done = "done",
+  Fail = "fail",
+}
 
-export type EffectManager<Store extends StoreType, EffectArgs extends UnknownArgs = UnknownArgs> = {
-  args: EffectArgs;
-  state: EffectState;
-  value: Partial<Store> | Error | void;
-  subscribe: (
-    subscriber: (state: EffectState, value: Partial<Store> | Error | void, args?: EffectArgs) => void,
-  ) => () => void;
-};
+type EffectSubscribe = (state: EffectState) => void;
+type EffectUnsubscribe = () => void;
+
+export interface EffectAction<State extends StateType, InputArgs extends unknown[], ReturnType extends unknown = void> {
+  (...args: InputArgs): ReturnType;
+
+  effectName?: string;
+  state: EffectState | null;
+  subscribe: (subscriber: EffectSubscribe) => EffectUnsubscribe;
+}
 
 /**
  * WARNING!
  * only for additional typings of effect's action
  * used for effect manager
  */
-export type EffectInternal<Store extends StoreType> = {
+export type EffectInternal<State extends StateType> = {
   /** WARNING! this property is not exist. used only for typings. */
-  __storeType__: Store;
+  __stateType__: State;
 };
 
-/**
- * **Simple effect**
- * Action which allows to update store without any other manipulations
- *
- * @example
- * const updateApples = effect(store)
- * updateApples({
- *  apples: [1,2,3,4],
- *  someOtherStoreKey: 22,
- * })
- */
-export function effect<Store extends StoreType, Update extends Partial<Store> = Partial<Store>>(
-  store: Store,
-): EffectAction<Store, [Update]>;
-/**
- * **Property effect**
- * Action which update store property
- *
- * @example
- * const updateApples = effect(store, "apples")
- * updateApples([1,2,3,4])
- */
-export function effect<Store extends StoreType, StorePropertyName extends keyof Store = keyof Store>(
-  store: Store,
-  property: StorePropertyName,
-): EffectAction<Store, [Store[StorePropertyName]]>;
-/**
- * **Standard\Async effect**
- * Synchronous\Asynchronous store update
- *
- * @example
- * const updateApples = effect(store, apples => ({ apples })
- * updateApples([1,2,3,4])
- */
+interface EffectBaseConfig<State extends StateType, Args extends unknown[]> {
+  name?: string;
+  store: Store<State>;
+  /** when action ends successfully */
+  finalize?: (state: State, ...args: Args) => void | Promise<void>;
+  failure?: (e: Error, state: State, ...args: Args) => void | Promise<void>;
+}
+
+interface EffectActionConfig<
+  State extends StateType,
+  Args extends unknown[],
+  ReturnType extends void | State | Promise<State>
+> extends EffectBaseConfig<State, Args> {
+  action: (state: State, ...args: Args) => ReturnType;
+}
 export function effect<
-  Store extends StoreType,
-  StoreUpdate extends Partial<Store> | void | Promise<Partial<Store>> | Promise<void>,
-  InputArgs extends UnknownArgs = UnknownArgs
->(
-  store: Store,
-  action: Func<InputArgs, StoreUpdate>,
-): EffectAction<Store, InputArgs, ReturnType<typeof action> extends Promise<unknown> ? Promise<void> : void>;
-export function effect<Store extends StoreType>(store: Store, param: any = null): any {
-  const { partialUpdate } = manage(store);
+  State extends StateType,
+  Args extends unknown[],
+  ReturnType extends void | State | Promise<State>
+>(config: EffectActionConfig<State, Args, ReturnType>): EffectAction<State, Args> {
+  const { store, name, failure, finalize } = config;
+  const [publish, subscribe] = createPubSub<EffectSubscribe>();
 
-  const [updateActionState, subscribe] = createPubSub<
-    (state: EffectState, value: Partial<Store> | Error | void, args?: unknown[]) => void
-  >();
-
-  subscribe((state: EffectState, value: EffectManager<Store>["value"], args) => {
-    effectManager.state = state;
-    effectManager.value = value instanceof Error ? value : copy(value);
-    if (args) {
-      effectManager.args = args;
-    }
+  subscribe((state: EffectState) => {
+    action.state = state;
   });
 
-  const effectManager: EffectManager<Store> = {
-    args: [],
-    state: null,
-    value: void 0,
-    subscribe,
-  };
+  const action: EffectAction<State, Args> = (...args: Args): Promise<void> | void => {
+    let nextState: void | State | Promise<State> = void 0;
 
-  const action = <A extends UnknownArgs>(...args: A): any => {
-    let update: any = void 0;
-
-    updateActionState(effectState.pending, void 0, args);
+    publish(EffectState.Pending);
 
     try {
-      // defining what update case it is
-      if (typeof param === "function") {
-        // effect(store, () => ({ param: "value" }))
-        // effect(store, async () => ({ param: "value" }))
-        update = param(...args);
-      } else if (param) {
-        // effect(store, "param")("value")
-        update = { [param]: args[0] };
-      } else if (isObject(args[0])) {
-        // effect(store)({ param: "value" })
-        update = args[0];
-      }
+      nextState = config.action(store.state, ...args);
     } catch (e) {
-      updateActionState(effectState.fail, e);
-      throw e;
+      publish(EffectState.Fail);
+      if (failure) {
+        failure(e, store.state, ...args);
+      } else {
+        throw e;
+      }
     }
 
-    if (update instanceof Promise) {
-      return update
-        .then(updateData => {
-          partialUpdate(updateData);
-          updateActionState(effectState.done, updateData);
+    if (nextState instanceof Promise) {
+      return nextState
+        .then(nextState => {
+          store.set(nextState);
+          publish(EffectState.Done);
+          finalize && finalize(store.state, ...args);
         })
         .catch(e => {
-          updateActionState(effectState.fail, e);
-          throw e;
+          publish(EffectState.Fail);
+          if (failure) {
+            failure(e, store.state, ...args);
+          } else {
+            throw e;
+          }
         });
     } else {
-      partialUpdate(update);
-      updateActionState(effectState.done, update);
+      store.set(nextState);
+      publish(EffectState.Done);
     }
   };
 
-  action[reffectKey] = effectManager;
+  action.effectName = name;
+  action.state = null;
+  action.subscribe = subscribe;
 
   return action;
 }
